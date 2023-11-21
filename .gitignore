@@ -18,3 +18,9 @@ ExportedObj/
 
 # Unity3D generated file on crash reports
 sysinfo.txt
+
+# 特殊的 .meta
+*.csproj.meta
+*.unityproj.meta
+*.sln.meta
+*.tmp.meta
