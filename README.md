@@ -4,7 +4,7 @@
 作者: Hamster5295
   
 ## 导入
-1. 复制该仓库的 git 地址
+1. 复制该仓库的 git 地址: https://github.com/BingyanStudio/BingyanDevKit.git
 2. 打开 Unity3D 的 PackageManager 窗口
 3. 点击左上角的“+”号，选择 "Add package from git URL"
 4. 将刚刚复制的地址粘贴进去
