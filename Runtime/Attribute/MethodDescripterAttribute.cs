@@ -8,7 +8,7 @@ namespace Bingyan
     /// <para>主要是为了将Inspector里注册委托事件的过程变得更加"策划友好"</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public abstract class MethodDescripterAttribute : Attribute
+    public class MethodDescripterAttribute : Attribute
     {
         private string id;
         private string desc;

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using static UnityEditor.EditorGUI;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     /// <summary>
     /// 绘制 <see cref="AudioCallback"/> 的自定义编辑器

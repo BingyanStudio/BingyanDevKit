@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using static UnityEditor.EditorGUI;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     /// <summary>
     /// 一个简单的搜索弹窗，可以匹配字符串，并将输入的<see cref="SerializedProperty"/>的字符串值替换为选中的内容

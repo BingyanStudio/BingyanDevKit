@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     /// <summary>
     /// 绘制 <see cref="TitleAttribute"/> 对属性框的更改

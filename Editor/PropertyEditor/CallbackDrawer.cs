@@ -5,7 +5,7 @@ using System.Linq;
 using static UnityEditor.EditorGUI;
 using System.Reflection;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     /// <summary>
     /// 绘制 <see cref="Callback"/> 对属性框的更改

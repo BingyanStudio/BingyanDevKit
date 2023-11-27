@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using LitJson;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     /// <summary>
     /// DevKit的设置文件

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     /// <summary>
     /// 绘制 <see cref="SceneNameAttribute"/> 对属性框的更改

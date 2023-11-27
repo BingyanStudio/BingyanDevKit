@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEditor.EditorGUILayout;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     /// <summary>
     /// DevKit 的设置UI绘制器。UI 可以在 Edit -> Project Settings 里找到。

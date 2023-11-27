@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     /// <summary>
     /// 对PropertyDrawer的一次封装，增加了一些方便绘制的方法
