@@ -63,7 +63,7 @@ namespace Bingyan
     /// <para>显然这是仔细阅读了Fungus代码的产物（</para>
     /// </summary>
     [Serializable]
-    public class Parameter
+    internal class Parameter
     {
         public string typeFullName;
 

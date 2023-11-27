@@ -56,7 +56,7 @@ namespace Bingyan
         }
 
         [Serializable]
-        public class AudioCallbackElement
+        internal class AudioCallbackElement
         {
             [SerializeField] private AudioSource source;
             [SerializeField] private PlayType type;

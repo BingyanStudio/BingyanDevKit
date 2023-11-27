@@ -9,7 +9,7 @@ namespace Bingyan
     /// 执行Tween动画的组件<br/>
     /// 全自动运行，应该不需要获取到这个对象
     /// </summary>
-    public class Tweener : MonoBehaviour
+    internal class Tweener : MonoBehaviour
     {
         internal static Tweener Instance { get; private set; }
 
