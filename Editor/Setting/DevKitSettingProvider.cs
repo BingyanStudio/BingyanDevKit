@@ -51,6 +51,7 @@ namespace Bingyan.Editor
                         EndFoldoutHeaderGroup();
                     }
                     EditorGUI.indentLevel--;
+                    serConfig.ApplyModifiedProperties();
                 }
             };
     }
