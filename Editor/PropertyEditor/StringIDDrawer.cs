@@ -72,7 +72,7 @@ namespace Bingyan.Editor
                 int selected;
                 if (!list.Contains(property.stringValue))
                 {
-                    if (property.stringValue != string.Empty) Debug.LogWarning($"ID {property.stringValue} 没有出现在列表里，已经设置为【无】\n别问我在哪里，我也不知道，这段代码是对所有ID框处理的\n哼哼啊啊啊啊啊啊啊啊啊");
+                    if (property.stringValue != string.Empty) Debug.LogWarning($"ID {property.stringValue} 没有出现在可用ID列表里，已经设置为【无】");
                     property.stringValue = string.Empty;
                     selected = 0;
                 }
