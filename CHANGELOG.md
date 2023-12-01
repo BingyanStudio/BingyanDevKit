@@ -41,3 +41,13 @@
 # [1.1.1] - 2023-12-1
 ### 修复
 * 修复了无法正常读取存档中的 `float` 值的 bug
+
+# [1.1.2] - 2023-12-1
+### 新增
+* 对 `Archive` 类的单元测试
+
+### 更改
+* 现在 `StrIDAttributePropertyDrawer` 的绘制不再需要 `FieldInfo` 了
+
+### 修复
+* 修复了 `StrID` 的 `prefix` 参数无效的 bug
