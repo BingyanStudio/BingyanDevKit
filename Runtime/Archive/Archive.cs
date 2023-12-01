@@ -17,8 +17,6 @@ namespace Bingyan
     /// </summary>
     public static class Archive
     {
-        private static List<DataParser> parsers = new();
-
         /// <summary>
         /// 在缓存数据即将被写入存档时触发
         /// <para>可以参考一下 DataStore 家族的写法</para>
@@ -37,12 +35,18 @@ namespace Bingyan
         public static event Action Loaded;
 
         /// <summary>
+        /// 所有的转换器，控制某些 LitJson 无法解析的类型进行序列化/反序列化
+        /// </summary>
+        private static List<DataParser> parsers = new();
+
+        /// <summary>
         /// 缓存字典，是外界访问与存档之间的桥梁。
         /// </summary>
         /// <typeparam name="string">键</typeparam>
         /// <typeparam name="object">值</typeparam>
         private static Dictionary<string, object> datas = new Dictionary<string, object>();
 
+        // 注册部分解析器
         static Archive()
         {
             RegisterParser<Vector2>("v2",

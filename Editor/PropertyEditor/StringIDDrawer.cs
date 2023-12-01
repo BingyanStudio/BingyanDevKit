@@ -42,7 +42,6 @@ namespace Bingyan.Editor
         /// <param name="idGroup">ID所属的ID组</param>
         /// <param name="allowNew">是否允许新建ID</param>
         /// <param name="prefix">[可选]筛选ID的前缀</param>
-        /// <param name="field">[可选]这个属性对应的反射，用于一些特殊的前缀</param>
         public static void IDField(Rect position, SerializedProperty property, GUIContent label, string idGroup, bool allowNew, string prefix = "")
         {
             if (property.propertyType != SerializedPropertyType.String)
