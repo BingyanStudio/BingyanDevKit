@@ -47,7 +47,7 @@
 * 对 `Archive` 类的单元测试
 
 ### 更改
-* 现在 `StrIDAttributePropertyDrawer` 的绘制不再需要 `FieldInfo` 了
+* 现在 `StringIDDrawer` 的绘制不再需要 `FieldInfo` 了
 
 ### 修复
 * 修复了 `StrID` 的 `prefix` 参数无效的 bug
