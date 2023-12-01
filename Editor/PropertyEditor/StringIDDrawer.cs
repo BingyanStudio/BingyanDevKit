@@ -20,7 +20,7 @@ namespace Bingyan.Editor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var attr = attribute as StrIDAttribute;
-            IDField(position, property, label, attr, fieldInfo);
+            IDField(position, property, label, attr);
         }
 
         /// <summary>
@@ -30,9 +30,8 @@ namespace Bingyan.Editor
         /// <param name="property">字符串属性</param>
         /// <param name="label">标签</param>
         /// <param name="attr">StrID标签对象</param>
-        /// <param name="field">[可选]这个属性对应的反射，用于一些特殊的前缀</param>
-        public static void IDField(Rect position, SerializedProperty property, GUIContent label, StrIDAttribute attr, FieldInfo field = null)
-            => IDField(position, property, label, attr.IdGroup, attr.AllowNew, attr.Prefix, field);
+        public static void IDField(Rect position, SerializedProperty property, GUIContent label, StrIDAttribute attr)
+            => IDField(position, property, label, attr.IdGroup, attr.AllowNew, attr.Prefix);
 
         /// <summary>
         /// 绘制一个ID选择框
@@ -44,7 +43,7 @@ namespace Bingyan.Editor
         /// <param name="allowNew">是否允许新建ID</param>
         /// <param name="prefix">[可选]筛选ID的前缀</param>
         /// <param name="field">[可选]这个属性对应的反射，用于一些特殊的前缀</param>
-        public static void IDField(Rect position, SerializedProperty property, GUIContent label, string idGroup, bool allowNew, string prefix = "", FieldInfo field = null)
+        public static void IDField(Rect position, SerializedProperty property, GUIContent label, string idGroup, bool allowNew, string prefix = "")
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
@@ -52,7 +51,7 @@ namespace Bingyan.Editor
                 return;
             }
 
-            prefix = GetPrefix(prefix, field);
+            prefix = GetPrefix(prefix, property);
 
             // 读取所有属于指定组，指定前缀的ID列表。
             var idList = GetIdList(idGroup, prefix);
@@ -132,7 +131,7 @@ namespace Bingyan.Editor
             property.serializedObject.ApplyModifiedProperties();
         }
 
-        protected static string GetPrefix(string prefix, FieldInfo field)
+        protected static string GetPrefix(string prefix, SerializedProperty property)
         {
             if (prefix == string.Empty || prefix == null) return string.Empty;
             if (!prefix.StartsWith(PREFIX_COMMAND_SIGNATURE)) return prefix + PREFIX_SEPARATOR;
@@ -140,12 +139,7 @@ namespace Bingyan.Editor
             switch (prefix)
             {
                 case "class":
-                    if (field == null)
-                    {
-                        DialogUtils.Show("错误:", $"需要FieldInfo不为空，才可以解析{prefix}");
-                        return string.Empty;
-                    }
-                    else return field.DeclaringType.Name + PREFIX_SEPARATOR;
+                    return property.serializedObject.targetObject.GetType().ToString() + PREFIX_SEPARATOR;
                 default:
                     Debug.LogError($"错误: 未知的指令符: {prefix}");
                     return string.Empty;
