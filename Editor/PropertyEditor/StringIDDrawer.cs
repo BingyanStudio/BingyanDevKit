@@ -72,7 +72,7 @@ namespace Bingyan.Editor
                 int selected;
                 if (!list.Contains(property.stringValue))
                 {
-                    if (property.stringValue != string.Empty) Debug.LogWarning($"ID {property.stringValue} 没有出现在列表里，已经设置为【无】\n别问我在哪里，我也不知道，这段代码是对所有ID框处理的\n哼哼啊啊啊啊啊啊啊啊啊");
+                    if (property.stringValue != string.Empty) Debug.LogWarning($"ID {property.stringValue} 没有出现在可用ID列表里，已经设置为【无】");
                     property.stringValue = string.Empty;
                     selected = 0;
                 }
@@ -97,36 +97,36 @@ namespace Bingyan.Editor
                 var btn = new Rect(inputRect);
                 btn.x += btn.width + 5;
                 btn.width = 40;
-                if (GUI.Button(btn, "取消"))
-                    property.stringValue = string.Empty;
+
+                // 保存临时变量，请参考这里的代码
+                var e = Event.current;
+                if (GUI.Button(btn, "确定") || (e.isKey && e.keyCode == KeyCode.Return))
+                {
+                    // 保存在属性中的ID是没有前缀的，前缀只是用来筛选ID的
+                    property.stringValue = newId;
+
+                    // 保存到设置里的ID需要加前缀
+                    newId = prefix + newId;
+
+                    var modifiedList = DevKitSetting.GetIds(idGroup);
+                    if (!modifiedList.Contains(newId))
+                        if (allowNew) modifiedList.Add(newId);
+                        else
+                        {
+                            property.stringValue = string.Empty;
+                            DialogUtils.Show("错误", "没有找到这个id，请检查输入是否有误", isErr: false);
+                            return;
+                        }
+
+                    var serConfig = DevKitSetting.instance.GetSerializedObject();
+                    serConfig.FindProperty("ids_json").stringValue = DevKitSetting.instance.AddIdListToJson(idGroup, modifiedList);
+                    serConfig.ApplyModifiedPropertiesWithoutUndo();
+                }
                 else
                 {
                     btn.x += btn.width + 5;
-                    var e = Event.current;
-
-                    // 保存临时变量，请参考这里的代码
-                    if (GUI.Button(btn, "确定") || (e.isKey && e.keyCode == KeyCode.Return))
-                    {
-                        // 保存在属性中的ID是没有前缀的，前缀只是用来筛选ID的
-                        property.stringValue = newId;
-
-                        // 保存到设置里的ID需要加前缀
-                        newId = prefix + newId;
-
-                        var modifiedList = DevKitSetting.GetIds(idGroup);
-                        if (!modifiedList.Contains(newId))
-                            if (allowNew) modifiedList.Add(newId);
-                            else
-                            {
-                                property.stringValue = string.Empty;
-                                DialogUtils.Show("错误", "没有找到这个id，请检查输入是否有误", isErr: false);
-                                return;
-                            }
-
-                        var serConfig = DevKitSetting.instance.GetSerializedObject();
-                        serConfig.FindProperty("ids_json").stringValue = DevKitSetting.instance.AddIdListToJson(idGroup, modifiedList);
-                        serConfig.ApplyModifiedPropertiesWithoutUndo();
-                    }
+                    if (GUI.Button(btn, "取消"))
+                        property.stringValue = string.Empty;
                 }
             }
             property.serializedObject.ApplyModifiedProperties();

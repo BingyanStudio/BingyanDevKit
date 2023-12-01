@@ -44,7 +44,17 @@ namespace Bingyan.Editor
         /// </summary>
         /// <param name="dict">字典，可以从 <see cref="Ids"/> 获取，更改后使用这个序列化。</param>
         /// <returns>序列化后的字符串。应当给予StoryTellerSetting.SerConfig的ids_json属性</returns>
-        public static string SetIdsDictToJson(Dictionary<string, List<string>> dict) => JsonMapper.ToJson(dict);
+        public static string SetIdsDictToJson(Dictionary<string, List<string>> dict)
+        {
+            // 删除字典内所有的空列表项
+            var keyToDel = new List<string>();
+            foreach (var item in dict)
+                if (item.Value.Count == 0) keyToDel.Add(item.Key);
+            var dictCopy = new Dictionary<string, List<string>>(dict);
+            keyToDel.ForEach(i => dictCopy.Remove(i));
+
+            return JsonMapper.ToJson(dictCopy);
+        }
 
         /// <summary>
         /// 对保存临时变量的对应的字典的某个变量组进行修改，并序列化成Json字符串
@@ -69,11 +79,5 @@ namespace Bingyan.Editor
         {
             Save(true);
         }
-
-        // [Serializable]
-        // private class IdDict
-        // {
-        //     private
-        // }
     }
 }
