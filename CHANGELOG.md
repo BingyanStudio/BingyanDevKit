@@ -27,3 +27,13 @@
 
 ### 修复
 * 修复了无法在 Project Settings 中删除字符串ID的问题
+
+## [1.1.0] - 2023-12-1
+### 新增
+* 将原 `GameData` 框架的功能并入 `DevKit` 中
+* 增加了对 `Vector2`, `Vector3`, `Quaternion` 数据类型进行 JSON 序列化、反序列化的支持
+* 增加了对 JSON 序列化、反序列化过程进行自定义的接口
+
+### 更改
+* 将 `Data` 类重命名为 `Archive` 类
+* 将 `LitJson` 库移动至 `Runtime` 文件夹
