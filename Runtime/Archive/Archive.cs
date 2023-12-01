@@ -226,7 +226,10 @@ namespace Bingyan
         public static T Get<T>(string key, T defaultVal)
         {
             if (!datas.ContainsKey(key)) datas.Add(key, defaultVal);
-            return (T)datas[key];
+
+            var result = datas[key];
+            if (result is double d) result = Convert.ToSingle(d);
+            return (T)result;
         }
 
         /// <summary>
