@@ -24,7 +24,7 @@ namespace Bingyan
         public event DataEventTrigger Saving;
 
         /// <value>
-        /// 在 Data 对应的键，在构造时指定
+        /// 在 Archive 对应的键，在构造时指定
         /// </value>
         protected string key;
 
@@ -34,8 +34,8 @@ namespace Bingyan
 
             Load();
 
-            Data.Loaded += Load;
-            Data.Saving += Save;
+            Archive.Loaded += Load;
+            Archive.Saving += Save;
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace Bingyan
         /// </summary>
         public void Close()
         {
-            Data.Loaded -= Load;
-            Data.Saving -= Save;
+            Archive.Loaded -= Load;
+            Archive.Saving -= Save;
         }
 
         protected virtual void Load()
@@ -74,10 +74,10 @@ namespace Bingyan
 
         public DataStoreList(string key) : base(key) { }
 
-        protected override void Save() { base.Save(); Data.Set(key, JsonMapper.ToJson(list)); }
+        protected override void Save() { base.Save(); Archive.Set(key, JsonMapper.ToJson(list)); }
         protected override void Load()
         {
-            list = JsonMapper.ToObject<List<T>>(Data.Get(key, "")) ?? new List<T>();
+            list = JsonMapper.ToObject<List<T>>(Archive.Get(key, "")) ?? new List<T>();
             base.Load();
         }
 
@@ -101,10 +101,10 @@ namespace Bingyan
         public Dictionary<string, V> Dict => dict;
         public DataStoreDict(string key) : base(key) { }
 
-        protected override void Save() { base.Save(); Data.Set(key, JsonMapper.ToJson(dict)); }
+        protected override void Save() { base.Save(); Archive.Set(key, JsonMapper.ToJson(dict)); }
         protected override void Load()
         {
-            dict = JsonMapper.ToObject<Dictionary<string, V>>(Data.Get(key, "")) ?? new Dictionary<string, V>();
+            dict = JsonMapper.ToObject<Dictionary<string, V>>(Archive.Get(key, "")) ?? new Dictionary<string, V>();
             base.Load();
         }
 

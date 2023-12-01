@@ -1,7 +1,9 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
 using System.Text;
+using System;
+using System.Linq;
+using UnityEngine;
 using LitJson;
 
 namespace Bingyan
@@ -13,26 +15,26 @@ namespace Bingyan
     /// <para>储存时: 外界 → 缓存 → 存档</para>
     /// <para>读取时：存档 → 缓存 → 外界</para>
     /// </summary>
-    public static class Data
+    public static class Archive
     {
-        public delegate void DataEventHandler();
+        private static List<DataParser> parsers = new();
 
         /// <summary>
         /// 在缓存数据即将被写入存档时触发
         /// <para>可以参考一下 DataStore 家族的写法</para>
         /// 另请参阅: <see cref = "Bingyan.DataStore"/>
         /// </summary>
-        public static event DataEventHandler Saving;
+        public static event Action Saving;
 
         /// <summary>
         /// 在缓存数据被写入存档后触发
         /// </summary>
-        public static event DataEventHandler Saved;
+        public static event Action Saved;
 
         /// <summary>
         /// 在存档被加载进缓存后触发
         /// </summary>
-        public static event DataEventHandler Loaded;
+        public static event Action Loaded;
 
         /// <summary>
         /// 缓存字典，是外界访问与存档之间的桥梁。
@@ -41,25 +43,63 @@ namespace Bingyan
         /// <typeparam name="object">值</typeparam>
         private static Dictionary<string, object> datas = new Dictionary<string, object>();
 
-        // 延迟更新的数据，直到下一次读档才会被应用
-        private static Dictionary<string, object> delayedData = new Dictionary<string, object>();
+        static Archive()
+        {
+            RegisterParser<Vector2>("v2",
+            s =>
+            {
+                var parts = s.Split(',');
+                return new Vector2(float.Parse(parts[0]), float.Parse(parts[1]));
+            },
+            obj =>
+            {
+                var vec = (Vector2)obj;
+                return $"{vec.x},{vec.y}";
+            });
+
+            RegisterParser<Vector3>("v3",
+            s =>
+            {
+                var parts = s.Split(',');
+                return new Vector3(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2]));
+            },
+            obj =>
+            {
+                var vec = (Vector3)obj;
+                return $"{vec.x},{vec.y},{vec.z}";
+            });
+
+            RegisterParser<Quaternion>("quat",
+            s =>
+            {
+                var parts = s.Split(',');
+                return new Quaternion(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2]), float.Parse(parts[3]));
+            },
+            obj =>
+            {
+                var quat = (Quaternion)obj;
+                return $"{quat.x},{quat.y},{quat.z},{quat.w}";
+            });
+        }
+
+        public static void RegisterParser<T>(string prefix, Func<string, object> importer, Func<object, string> exporter)
+        {
+            parsers.Add(new(typeof(T), prefix, importer, exporter));
+        }
 
         /// <summary>
         /// 加载存档，并将字典载入到Data缓存中，由 <c>Get&lt;T&gt;</c> 读取缓存数据, <c>Set&lt;T&gt;</c>写入
         /// </summary>
         /// <param name="saveIndex">存档序号</param>
-        public static void LoadToGame(int saveIndex)
+        public static void LoadToGame(int saveIndex) => ApplyArchive(Load(saveIndex));
+
+        /// <summary>
+        /// 将指定字典应用为当前存档
+        /// </summary>
+        /// <param name="archive">要应用的存档</param>
+        public static void ApplyArchive(Dictionary<string, object> archive)
         {
-            datas = Load(saveIndex);
-            if (delayedData.Count > 0)
-            {
-                foreach (var item in delayedData)
-                {
-                    if (!datas.ContainsKey(item.Key)) datas.Add(item.Key, item.Value);
-                    else datas[item.Key] = item.Value;
-                }
-                delayedData.Clear();
-            }
+            datas = archive;
             Loaded?.Invoke();
 
             PrintContent();
@@ -73,21 +113,32 @@ namespace Bingyan
         public static Dictionary<string, object> Load(int saveIndex)
         {
             var path = GetSaveFilePath(saveIndex);
-            Print($"正在加载存档 {saveIndex}\n路径: {path}\n\n");
+            Debug.Log($"正在加载存档 {saveIndex}\n路径: {path}\n\n");
 
-            StreamReader reader;
-            if (!Directory.Exists(GetDirectory())) Directory.CreateDirectory(GetDirectory());
-            if (!File.Exists(path)) reader = new StreamReader(File.Create(path));
-            else reader = new StreamReader(path, Encoding.UTF8);
+            CheckDirectory(saveIndex);
+            var reader = new StreamReader(path, Encoding.UTF8);
 
-            Dictionary<string, object> dict = new Dictionary<string, object>();
+            Dictionary<string, object> readDict = new Dictionary<string, object>();
             var content = reader.ReadToEnd();
 
-            dict = JsonMapper.ToObject<Dictionary<string, object>>(content);
+            readDict = JsonMapper.ToObject<Dictionary<string, object>>(content);
             reader.Close();
 
-            dict ??= new Dictionary<string, object>();
-            Print($"存档已加载!\n点击查看内容 \n\n{content}\n\n");
+            readDict ??= new Dictionary<string, object>();
+
+            var dict = new Dictionary<string, object>();
+            foreach (var item in readDict)
+            {
+                if (item.Value is string s)
+                {
+                    var parser = parsers.First(i => i.MatchPrefix(s));
+                    if (parser == null) dict.Add(item.Key, item.Value);
+                    else dict.Add(item.Key, parser.Import(s));
+                }
+                else dict.Add(item.Key, item.Value);
+            }
+
+            Debug.Log($"存档已加载!\n点击查看内容 \n\n{content}\n\n");
             return dict;
         }
 
@@ -95,7 +146,7 @@ namespace Bingyan
         /// 将缓存数据保存至指定存档
         /// </summary>
         /// <param name="saveIndex">存档序号</param>
-        public static void Save(int saveIndex) => Save(saveIndex, new Dictionary<string, object>());
+        public static void Save(int saveIndex) => Save(saveIndex, null);
 
         /// <summary>
         /// 将缓存数据保存至指定存档
@@ -105,21 +156,32 @@ namespace Bingyan
         public static void Save(int saveIndex, Dictionary<string, object> extras)
         {
             var path = GetSaveFilePath(saveIndex);
-            Print($"正在保存存档 {saveIndex}\n路径: {path}\n\n");
+            Debug.Log($"正在保存存档 {saveIndex}\n路径: {path}\n\n");
             Saving?.Invoke();
 
-            foreach (var item in extras)
-                Set(item.Key, item.Value);
+            if (extras != null)
+                foreach (var item in extras)
+                    Set(item.Key, item.Value);
 
             PrintContent();
+
+            var saveDict = new Dictionary<string, object>();
+            foreach (var item in datas)
+            {
+                var parser = parsers.FirstOrDefault(i => i.MatchType(item.Value));
+                if (parser == null) saveDict.Add(item.Key, item.Value);
+                else saveDict.Add(item.Key, parser.Export(item.Value));
+            }
+
+            CheckDirectory(saveIndex);
             StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8);
-            string content = JsonMapper.ToJson(datas);
+            string content = JsonMapper.ToJson(saveDict);
             writer.Write(content);
             writer.Flush();
             writer.Close();
 
             Saved?.Invoke();
-            Print($"存档已保存! \n点击查看内容 \n{content}\n\n");
+            Debug.Log($"存档已保存! \n点击查看内容 \n{content}\n\n");
         }
 
         /// <summary>
@@ -135,7 +197,7 @@ namespace Bingyan
             writer.Flush();
             writer.Close();
 
-            Print($"存档 {saveIndex} 已清空!");
+            Debug.Log($"存档 {saveIndex} 已清空!");
         }
 
         /// <summary>
@@ -143,7 +205,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="saveIndex">存档序号</param>
         /// <returns>存档是否曾经被存储过</returns>
-        public static bool HasSave(int saveIndex)
+        public static bool HasArchive(int saveIndex)
             => Directory.Exists(GetDirectory()) && File.Exists(GetSaveFilePath(saveIndex));
 
 
@@ -165,19 +227,6 @@ namespace Bingyan
         {
             if (!datas.ContainsKey(key)) datas.Add(key, defaultVal);
             return (T)datas[key];
-        }
-
-        /// <summary>
-        /// 向缓存延迟设置键值。数据将会延迟到下一次调用 <c>LoadToGame</c> 时加入到缓存区。换句话说，在此设置的数据会加入到下一次读档后的缓存中。
-        /// <para>（呃，老实说，如果游戏的其他部分设计得科学合理的话，应该不会用到这个方法）</para>
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <typeparam name="T"></typeparam>
-        public static void SetDelayed<T>(string key, T value)
-        {
-            if (delayedData.ContainsKey(key)) delayedData[key] = value;
-            else delayedData.Add(key, value);
         }
 
         /// <summary>
@@ -214,9 +263,17 @@ namespace Bingyan
             {
                 sb.AppendLine($"{item.Key}: {item.Value}");
             }
-            sb.AppendLine("========");
+            sb.AppendLine("=========");
             sb.AppendLine();
             Debug.Log(sb);
+        }
+
+        private static void CheckDirectory(int saveIndex)
+        {
+            string dir = GetDirectory();
+            string path = GetSaveFilePath(saveIndex);
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            if (!File.Exists(path)) File.Create(path).Close();
         }
 
         /// <summary>
@@ -232,10 +289,28 @@ namespace Bingyan
         /// <returns>指定序号的存档的存储路径</returns>
         private static string GetSaveFilePath(int index) => $"{GetDirectory()}/save_{index}.json";
 
-        /// <summary>
-        /// 简化 Debug.Log 用的
-        /// </summary>
-        /// <param name="msg">信息</param>
-        private static void Print(string msg) => Debug.Log(msg);
+        private class DataParser
+        {
+            private readonly Func<string, object> importer;
+            private readonly Func<object, string> exporter;
+
+            private readonly Type targetType;
+            private readonly string prefix;
+
+            public bool MatchType(object item) => item.GetType().Equals(targetType);
+            public bool MatchPrefix(string str) => str.StartsWith(prefix);
+            public object Import(string json) => importer.Invoke(TrimPrefix(json));
+            public string Export(object obj) => prefix + exporter.Invoke(obj);
+
+            private string TrimPrefix(string str) => str.Substring(prefix.Length, str.Length - prefix.Length);
+
+            public DataParser(Type target, string prefix, Func<string, object> importer, Func<object, string> exporter)
+            {
+                targetType = target;
+                this.prefix = '$' + prefix + ':';
+                this.importer = importer;
+                this.exporter = exporter;
+            }
+        }
     }
 }
