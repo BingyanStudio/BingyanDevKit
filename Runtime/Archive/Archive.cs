@@ -86,6 +86,13 @@ namespace Bingyan
             });
         }
 
+        /// <summary>
+        /// 注册解析器
+        /// </summary>
+        /// <param name="prefix">序列化为字符串时，使用的特征前缀</param>
+        /// <param name="importer">由字符串反序列化为对象的方法</param>
+        /// <param name="exporter">由对象序列化为字符串的方法</param>
+        /// <typeparam name="T">对象类型</typeparam>
         public static void RegisterParser<T>(string prefix, Func<string, object> importer, Func<object, string> exporter)
         {
             parsers.Add(new(typeof(T), prefix, importer, exporter));
@@ -135,7 +142,7 @@ namespace Bingyan
             {
                 if (item.Value is string s)
                 {
-                    var parser = parsers.First(i => i.MatchPrefix(s));
+                    var parser = parsers.FirstOrDefault(i => i.MatchPrefix(s));
                     if (parser == null) dict.Add(item.Key, item.Value);
                     else dict.Add(item.Key, parser.Import(s));
                 }
