@@ -5,7 +5,7 @@ namespace Bingyan
     /// </summary>
     public class Processable : IProcessable
     {
-        public void PhysicsProcess(float delta) { }
-        public void Process(float delta) { }
+        public virtual void PhysicsProcess(float delta) { }
+        public virtual void Process(float delta) { }
     }
 }
