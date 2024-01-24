@@ -78,6 +78,9 @@
 * 修复了 `Processable` 无法重写 `Process` 和 `PhysicsProcess` 方法的问题
 
 ## [1.1.5] - 2024-1-24
+### 增加
+* `DraggableUI.ResetDragObj()` 方法，让拖拽物还原到原来的位置与父子关系
+
 ### 更改
 * 将 `DraggableUI` 的 Unity 消息改为 `virtual`, 便于拓展
 * 现在 `DraggableUI` 在拖拽时，会将拖拽物放置于 `Canvas` 的直接子物体处，防止遮罩等影响
