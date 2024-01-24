@@ -95,13 +95,17 @@ namespace Bingyan
                 target.OnDrop(this);
                 target = null;
             }
-            else
-            {
-                GetDragObjTransform().position = originalPos;
-                GetDragObjTransform().SetParent(canvasTr);
-                GetDragObjTransform().SetParent(originalParent);
-            }
+            else ResetDragObj();
+
             DroppableUI.GetDroppables().ForEach(i => i.DisplayNormal());
+        }
+
+        public void ResetDragObj()
+        {
+            var dragObj = GetDragObjTransform();
+            dragObj.position = originalPos;
+            dragObj.SetParent(canvasTr);
+            dragObj.SetParent(originalParent);
         }
 
         /// <summary>
