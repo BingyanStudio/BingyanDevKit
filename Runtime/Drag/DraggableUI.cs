@@ -18,19 +18,15 @@ namespace Bingyan
         private Transform originalParent;
         private Transform canvasTr;
 
-        private void Awake()
+        protected virtual void Start()
         {
             raycaster = GetComponentInParent<GraphicRaycaster>();
-        }
-
-        private void Start()
-        {
             originalPos = GetDragObjTransform().position;
             originalParent = GetDragObjTransform().parent;
             canvasTr = GetComponentInParent<Canvas>().transform;
         }
 
-        public void OnDrag(PointerEventData eventData)
+        public virtual void OnDrag(PointerEventData eventData)
         {
             if (!dragging) return;
             GetDragObjTransform().position = eventData.position;
@@ -72,10 +68,13 @@ namespace Bingyan
             }
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        public virtual void OnPointerDown(PointerEventData eventData)
         {
             if (!CanDrag()) return;
             dragging = true;
+
+            // 设置到 Canvas 下，防止遮罩影响拖拽
+            GetDragObjTransform().SetParent(canvasTr);
 
             DroppableUI.GetDroppables().ForEach(i =>
             {
@@ -84,7 +83,7 @@ namespace Bingyan
             });
         }
 
-        public void OnPointerUp(PointerEventData eventData)
+        public virtual void OnPointerUp(PointerEventData eventData)
         {
             if (!dragging) return;
             dragging = false;
