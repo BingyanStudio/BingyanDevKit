@@ -95,10 +95,11 @@ namespace Bingyan
         /// <param name="recycle">停止后，是否将其释放并回收到对象池</param>
         public void Stop(bool recycle = false)
         {
-            Tweener.Instance.Remove(this);
-            Reset();
-
-            if (recycle) pool.Release(this);
+            if (Tweener.Instance.Remove(this))
+            {
+                Reset();
+                if (recycle) pool.Release(this);
+            }
         }
 
         private void Finish()
