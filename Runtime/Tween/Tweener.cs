@@ -37,9 +37,14 @@ namespace Bingyan
             tweens.Add(t);
         }
 
-        internal void Remove(Tween t)
+        internal bool Remove(Tween t)
         {
-            if (tweens.Contains(t)) tweens.Remove(t);
+            if (tweens.Contains(t))
+            {
+                tweens.Remove(t);
+                return true;
+            }
+            return false;
         }
 
         private void StopAll()

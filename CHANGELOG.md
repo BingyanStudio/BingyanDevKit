@@ -84,3 +84,6 @@
 ### 更改
 * 将 `DraggableUI` 的 Unity 消息改为 `virtual`, 便于拓展
 * 现在 `DraggableUI` 在拖拽时，会将拖拽物放置于 `Canvas` 的直接子物体处，防止遮罩等影响
+
+### 修复
+* 修复了 `Tween` 可能被多次回收入对象池的 bug
