@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -49,7 +48,8 @@ namespace Bingyan
 
         private void StopAll()
         {
-            tweens.ForEach(i => i.Stop(true));
+            for (int i = tweens.Count - 1; i >= 0; i--)
+                tweens[i].Stop(true);
         }
     }
 }
