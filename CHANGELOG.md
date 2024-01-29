@@ -67,30 +67,49 @@
 ## [1.1.3] - 2023-12-2
 ### 修复
 * 修复了部分情况下，`Archive` 解析器匹配报错的bug
-
   
 
 ## [1.1.4] - 2024-1-9
 ### 更改
 * 为说明文件 `README.md` `CHANGELOG.md` 等添加 `.meta` 文件以使引擎识别
+  
 
 ### 修复
 * 修复了 `Processable` 无法重写 `Process` 和 `PhysicsProcess` 方法的问题
+  
 
 ## [1.1.5] - 2024-1-24
 ### 增加
 * `DraggableUI.ResetDragObj()` 方法，让拖拽物还原到原来的位置与父子关系
+  
 
 ### 更改
 * 将 `DraggableUI` 的 Unity 消息改为 `virtual`, 便于拓展
 * 现在 `DraggableUI` 在拖拽时，会将拖拽物放置于 `Canvas` 的直接子物体处，防止遮罩等影响
+  
 
 ### 修复
 * 修复了 `Tween` 可能被多次回收入对象池的 bug
+  
 
 ## [1.1.6] - 2024-1-25
 ### 增加
 * `CustomConfigEditor`: 用于创建组件化 `ScriptableObject` 型配置文件的编辑器支持(初步)
+  
 
 ### 修复
 * 修复了 `Tween` 在切换场景时报错的 bug
+  
+
+## [1.2.0] -2024-1-29
+### 增加
+* `CompositeConfigEditor`: 将 `ScriptableObject` 拆分为组件化配置的编辑器拓展抽象
+* `CompositeComponentAttribute`: 用于注册适用于 `CompositeConfigEditor` 的组件的 `Attribute`
+  
+
+### 更改
+* `CustomConfigEditor` 更名为 `CompositeConfigEditor`
+  
+  
+### 修复
+* 修复了打包时未将 `DevKit.Editor` 集合排除引发的报错
