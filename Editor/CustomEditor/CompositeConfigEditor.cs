@@ -12,6 +12,7 @@ namespace Bingyan.Editor
     /// 可以让你的 <see cref="ScriptableObject"/> 按照组合 / 组件的方式进行构建<br/>
     /// 他的编辑方式很像 <see cref="GameObject" /> 在添加组件时的样子
     /// </summary>
+    /// <typeparam name="T">检索所有可用组件时依据的 Attribute, 必须是 <see cref="CompositeComponentAttribute"/> 的子类</typeparam>
     public abstract class CompositeConfigEditor<T>
                             : UnityEditor.Editor
                             where T : CompositeComponentAttribute
@@ -40,9 +41,31 @@ namespace Bingyan.Editor
         /// </summary>
         protected virtual string RemoveCompHint => "删除组件";
 
+        /// <summary>
+        /// 获取正在编辑的物体中，用于存储所有组件的属性
+        /// </summary>
+        /// <param name="target">物体</param>
+        /// <returns>对应属性</returns>
         protected abstract SerializedProperty GetCompField(SerializedObject target);
+
+        /// <summary>
+        /// 获取可用的所有组件的菜单列表
+        /// </summary>
+        /// <returns>菜单列表</returns>
         protected virtual List<string> GetCompMenu() => menus[typeof(T)];
+
+        /// <summary>
+        /// 使用组件菜单名称访问组件的类名
+        /// </summary>
+        /// <param name="menu">菜单名称</param>
+        /// <returns>类名</returns>
         protected virtual string CompMenuToClassName(string menu) => menuToClassName[typeof(T)][menu];
+
+        /// <summary>
+        /// 使用组件的类型访问其展示名称
+        /// </summary>
+        /// <param name="type">组件类型</param>
+        /// <returns>展示名称</returns>
         protected virtual string TypeToCompName(Type type) => typeToName[typeof(T)][type];
 
         private void OnEnable()
