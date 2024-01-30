@@ -94,6 +94,10 @@ namespace Bingyan.Editor
             }
 
             var path = AssetDatabase.GetAssetPath(target);
+            var comps = GetCompField(serializedObject);
+            var items = AssetDatabase.LoadAllAssetsAtPath(path);
+            comps.arraySize = Mathf.Max(0, items.Length - 1);
+
             if (GUILayout.Button(AddCompHint, GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.5f)))
             {
                 var menu = new GenericMenu();
@@ -103,27 +107,27 @@ namespace Bingyan.Editor
                      var name = CompMenuToClassName(i);
                      var item = ScriptableObject.CreateInstance(name);
                      item.name = name;
-                     item.hideFlags = HideFlags.HideInHierarchy;
+                     item.hideFlags = (ShowSubObjs ? HideFlags.None : HideFlags.HideInHierarchy) | HideFlags.NotEditable;
                      AssetDatabase.AddObjectToAsset(item, target);
                      AssetDatabase.SaveAssets();
                  }));
                 menu.ShowAsContext();
             }
 
-            var comps = GetCompField(serializedObject);
-            var items = AssetDatabase.LoadAllAssetsAtPath(path);
-            comps.arraySize = Mathf.Max(0, items.Length - 1);
             int idx = 0;
-
             foreach (var item in items)
             {
-                if (!item) continue;
+                if (!item)
+                {
+                    comps.arraySize--;
+                    continue;
+                }
 
                 EditorGUILayout.Space(30f);
                 if (item == target) continue;
 
                 comps.GetArrayElementAtIndex(idx++).objectReferenceValue = item;
-                item.hideFlags = ShowSubObjs ? HideFlags.None : HideFlags.HideInHierarchy;
+                item.hideFlags = (ShowSubObjs ? HideFlags.None : HideFlags.HideInHierarchy) | HideFlags.NotEditable;
 
                 BeginHorizontal();
                 var itemName = TypeToCompName(item.GetType());
