@@ -103,7 +103,7 @@ namespace Bingyan.Editor
                      var name = CompMenuToClassName(i);
                      var item = ScriptableObject.CreateInstance(name);
                      item.name = name;
-                     item.hideFlags = HideFlags.HideInHierarchy;
+                     item.hideFlags = (ShowSubObjs ? HideFlags.None : HideFlags.HideInHierarchy) | HideFlags.NotEditable;
                      AssetDatabase.AddObjectToAsset(item, target);
                      AssetDatabase.SaveAssets();
                  }));
@@ -117,13 +117,18 @@ namespace Bingyan.Editor
 
             foreach (var item in items)
             {
-                if (!item) continue;
+                if (!item)
+                {
+                    AssetDatabase.RemoveObjectFromAsset(item);
+                    comps.arraySize--;
+                    continue;
+                }
 
                 EditorGUILayout.Space(30f);
                 if (item == target) continue;
 
                 comps.GetArrayElementAtIndex(idx++).objectReferenceValue = item;
-                item.hideFlags = ShowSubObjs ? HideFlags.None : HideFlags.HideInHierarchy;
+                item.hideFlags = (ShowSubObjs ? HideFlags.None : HideFlags.HideInHierarchy) | HideFlags.NotEditable;
 
                 BeginHorizontal();
                 var itemName = TypeToCompName(item.GetType());
