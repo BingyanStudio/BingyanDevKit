@@ -94,6 +94,10 @@ namespace Bingyan.Editor
             }
 
             var path = AssetDatabase.GetAssetPath(target);
+            var comps = GetCompField(serializedObject);
+            var items = AssetDatabase.LoadAllAssetsAtPath(path);
+            comps.arraySize = Mathf.Max(0, items.Length - 1);
+
             if (GUILayout.Button(AddCompHint, GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.5f)))
             {
                 var menu = new GenericMenu();
@@ -110,16 +114,11 @@ namespace Bingyan.Editor
                 menu.ShowAsContext();
             }
 
-            var comps = GetCompField(serializedObject);
-            var items = AssetDatabase.LoadAllAssetsAtPath(path);
-            comps.arraySize = Mathf.Max(0, items.Length - 1);
             int idx = 0;
-
             foreach (var item in items)
             {
                 if (!item)
                 {
-                    AssetDatabase.RemoveObjectFromAsset(item);
                     comps.arraySize--;
                     continue;
                 }
