@@ -124,6 +124,19 @@
 ### 新增
 * `RelayProcesser<T>` 中继处理器，用于实现多层处理结构
 * `DefaultRelayProcesser` 泛用型中继处理器
+  
 
-### 修改
+### 更改
 * `Processer<T>` 现在成为对 `RelayProcesser<T>` 的 Mono 封装
+  
+
+
+## [1.2.3] - 2024-2-8
+### 新增
+* `RelayProcesserMono<T>` 和 `DefaultRelayProcesserMono`: 可添加为组件的中继处理器
+* `IProcesser<T>`: 处理器抽象接口
+  
+
+### 更改
+* `Processer<T>` 更名为 `ProcesserMono<T>`
+* `DefaultProcesser` 更名为 `DefaultProcesserMono`
