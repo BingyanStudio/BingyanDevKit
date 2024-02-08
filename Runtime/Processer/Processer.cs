@@ -22,6 +22,9 @@ namespace Bingyan
         {
             processer.PhysicsProcess(Time.fixedDeltaTime);
         }
+
+        public void Add(T item) => processer.Add(item);
+        public void Remove(T item) => processer.Remove(item);
     }
 
     /// <summary>
