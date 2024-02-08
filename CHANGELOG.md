@@ -79,7 +79,7 @@
   
 
 ## [1.1.5] - 2024-1-24
-### 增加
+### 新增
 * `DraggableUI.ResetDragObj()` 方法，让拖拽物还原到原来的位置与父子关系
   
 
@@ -93,7 +93,7 @@
   
 
 ## [1.1.6] - 2024-1-25
-### 增加
+### 新增
 * `CustomConfigEditor`: 用于创建组件化 `ScriptableObject` 型配置文件的编辑器支持(初步)
   
 
@@ -102,7 +102,7 @@
   
 
 ## [1.2.0] -2024-1-29
-### 增加
+### 新增
 * `CompositeConfigEditor`: 将 `ScriptableObject` 拆分为组件化配置的编辑器拓展抽象
 * `CompositeComponentAttribute`: 用于注册适用于 `CompositeConfigEditor` 的组件的 `Attribute`
   
@@ -118,3 +118,12 @@
 ## [1.2.1] - 2024-1-30
 ### 修复
 * 调优了 `CustomConfigEditor` 在组件被删除时的表现
+
+
+## [1.2.2] - 2024-2-8
+### 新增
+* `RelayProcesser<T>` 中继处理器，用于实现多层处理结构
+* `DefaultRelayProcesser` 泛用型中继处理器
+
+### 修改
+* `Processer<T>` 现在成为对 `RelayProcesser<T>` 的 Mono 封装
