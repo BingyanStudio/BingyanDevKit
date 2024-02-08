@@ -75,4 +75,9 @@ namespace Bingyan
             items.Remove(item);
         }
     }
+
+    /// <summary>
+    /// 泛用的 RelayProcesser，如果不想指定类型就用它吧！
+    /// </summary>
+    public class DefaultRelayProcesser : RelayProcesser<IProcessable> { }
 }
