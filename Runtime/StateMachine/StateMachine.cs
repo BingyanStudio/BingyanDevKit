@@ -7,17 +7,17 @@ using System.Text;
 namespace Bingyan
 {
     /// <summary>
-    /// 有限状态机<br/>
+    /// 有限状态机，但Mono形态<br/>
     /// 内部的状态由框架自动生成，你需要在泛型类 T 中提供你自己的状态基类<br/>
     /// 要指定初始状态，只需要在 Start 或 Awake 中调用 <see cref="ChangeState"/>
     /// </summary>
     /// <typeparam name="T">你的状态基类</typeparam>
-    public class FSM<T> : ProcessableMono where T : FSMState
+    public class MonoFSM<T> : ProcessableMono where T : FSMState
     {
         protected Dictionary<Type, T> states;
         public T CurrentState { get; private set; }
 
-        public FSM()
+        public MonoFSM()
         {
             var stateTypes = typeof(T).Assembly.GetTypes().Where(i => i.IsSubclassOf(typeof(T)) && !i.IsAbstract);
             states = stateTypes.Select(i => Activator.CreateInstance(i, this) as T)
