@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using System.Collections.Generic;
 using static UnityEditor.EditorGUI;
-using System.Reflection;
 
 namespace Bingyan.Editor
 {
@@ -139,8 +139,10 @@ namespace Bingyan.Editor
             {
                 case "class":
                     return property.serializedObject.targetObject.GetType().ToString() + PREFIX_SEPARATOR;
+                case "scene":
+                    return EditorSceneManager.GetActiveScene().name + PREFIX_SEPARATOR;
                 default:
-                    Debug.LogError($"错误: 未知的指令符: {prefix}");
+                    Debug.LogError($"错误: 未知的前缀指令: {prefix}");
                     return string.Empty;
             }
         }
