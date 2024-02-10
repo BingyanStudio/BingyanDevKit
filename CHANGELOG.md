@@ -139,4 +139,12 @@
 
 ### 更改
 * `Processer<T>` 更名为 `ProcesserMono<T>`
-* `DefaultProcesser` 更名为 `DefaultProcesserMono`
+* `DefaultProcesser` 更名为 `DefaultProcesserMono`  
+  
+
+## [1.2.4] - 2024-2-10
+### 新增
+* `StrID` 现在支持一种新前缀 `$scene`
+  * 使用该前缀的 ID 会自动以当前场景的名称作为前缀
+  * 要筛选，只需要在其他 `StrID` 传入 `prefix:"你的场景名称"`
+  * 非常适合【场景限定】ID 使用
