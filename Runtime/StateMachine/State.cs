@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Bingyan
 {
     /// <summary>
@@ -6,9 +8,9 @@ namespace Bingyan
     /// </summary>
     public abstract class FSMState
     {
-        protected MonoFSM<FSMState> Host;
+        protected FSM<FSMState> Host;
 
-        protected FSMState(MonoFSM<FSMState> host)
+        protected FSMState(FSM<FSMState> host)
         {
             Host = host;
         }
@@ -17,6 +19,12 @@ namespace Bingyan
         public virtual void OnEnter() { }
         public virtual void OnUpdate(float delta) { }
         public virtual void OnFixedUpdate(float delta) { }
+        public virtual void OnTriggerEnter2D(Collider2D col) { }
+        public virtual void OnTriggerStay2D(Collider2D col) { }
+        public virtual void OnTriggerExit2D(Collider2D col) { }
+        public virtual void OnColliderEnter2D(Collision2D col) { }
+        public virtual void OnColliderStay2D(Collision2D col) { }
+        public virtual void OnColliderExit2D(Collision2D col) { }
         public virtual void OnExit() { }
 
         public static implicit operator bool(FSMState self) => self != null;
