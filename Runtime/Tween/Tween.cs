@@ -128,7 +128,7 @@ namespace Bingyan
                 if (recycle)
                 {
                     pool.Push(this);
-                    if (Verbose) Debug.Log($"Tween Recycled: {GetHashCode()}");
+                    if (Verbose) Debug.Log($"Tween 被回收: {GetHashCode()}");
                 }
             }
         }
@@ -256,7 +256,7 @@ namespace Bingyan
                     b.next.previous = null;
                 }
                 var t = pool.Count > 0 ? pool.Pop() : new Tween();
-                Debug.Log($"Tween spawned: {t.GetHashCode()}");
+                if (Verbose) Debug.Log($"Tween 被获取: {t.GetHashCode()}");
                 t.Init(b);
                 return t;
             }
