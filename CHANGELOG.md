@@ -158,3 +158,7 @@
 ### 新增
 * 添加了状态机 `FSM<T>` 和对应的状态 `FSMState`
   * `FSM<T>` 将会自动实例化 `T` 指定的状态对象
+
+
+### 更改
+* 现在 `Tween` 改用 `Stack` 作为对象池，而非 Unity 内置的 `ObjectPool<Tween>`

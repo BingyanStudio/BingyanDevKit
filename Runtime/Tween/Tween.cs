@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
 
 namespace Bingyan
 {
@@ -16,7 +16,7 @@ namespace Bingyan
     /// </summary>
     public class Tween
     {
-        internal static ObjectPool<Tween> pool = new(() => new Tween(), t => t.Reset());
+        internal static Stack<Tween> pool = new();
 
         static Tween()
         {
@@ -98,7 +98,7 @@ namespace Bingyan
             if (Tweener.Instance.Remove(this))
             {
                 Reset();
-                if (recycle) pool.Release(this);
+                if (recycle) pool.Push(this);
             }
         }
 
@@ -218,7 +218,7 @@ namespace Bingyan
                     b = b.previous;
                     b.next.previous = null;
                 }
-                var t = pool.Get();
+                var t = pool.Count > 0 ? pool.Pop() : new Tween();
                 t.Init(b);
                 return t;
             }
