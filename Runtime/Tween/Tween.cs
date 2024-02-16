@@ -16,6 +16,12 @@ namespace Bingyan
     /// </summary>
     public class Tween
     {
+        /// <summary>
+        /// 是否打印额外的信息，如 Tween 对象的生成、回收等<br/>
+        /// 对于莫名其妙不工作的情况非常有用
+        /// </summary>
+        public static bool Verbose { get; set; } = false;
+
         internal static Stack<Tween> pool = new();
 
         static Tween()
@@ -63,6 +69,11 @@ namespace Bingyan
         public void Play(bool recycle = true)
         {
             if (running) return;
+            if (!IsValid())
+            {
+                if (Verbose) Debug.LogWarning("该对象已经被回收，而你仍然尝试播放它！");
+                return;
+            }
             running = true;
             recycleOnFinish = recycle;
 
@@ -77,6 +88,11 @@ namespace Bingyan
         public void Pause()
         {
             if (!running) return;
+            if (!IsValid())
+            {
+                if (Verbose) Debug.LogWarning("该对象已经被回收，而你仍然尝试暂停它！");
+                return;
+            }
             paused = true;
         }
 
@@ -86,6 +102,11 @@ namespace Bingyan
         public void Resume()
         {
             if (!running) return;
+            if (!IsValid())
+            {
+                if (Verbose) Debug.LogWarning("该对象已经被回收，而你仍然尝试继续它！");
+                return;
+            }
             paused = false;
         }
 
@@ -95,12 +116,28 @@ namespace Bingyan
         /// <param name="recycle">停止后，是否将其释放并回收到对象池</param>
         public void Stop(bool recycle = false)
         {
+            if (!IsValid())
+            {
+                if (Verbose) Debug.LogWarning("该对象已经被回收，而你仍然尝试停止它！");
+                return;
+            }
+
             if (Tweener.Instance.Remove(this))
             {
                 Reset();
-                if (recycle && !pool.Contains(this)) pool.Push(this);
+                if (recycle)
+                {
+                    pool.Push(this);
+                    if (Verbose) Debug.Log($"Tween Recycled: {GetHashCode()}");
+                }
             }
         }
+
+        /// <summary>
+        /// 当前 Tween 是否可用（没有被回收入对象池中）<br/>
+        /// 如果你的代码里长期留存某个可能被回收的 Tween 对象，请务必检查这个
+        /// </summary>
+        public bool IsValid() => !pool.Contains(this);
 
         private void Finish()
         {
@@ -219,6 +256,7 @@ namespace Bingyan
                     b.next.previous = null;
                 }
                 var t = pool.Count > 0 ? pool.Pop() : new Tween();
+                Debug.Log($"Tween spawned: {t.GetHashCode()}");
                 t.Init(b);
                 return t;
             }
