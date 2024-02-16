@@ -151,4 +151,14 @@
   
 
 ### 修复
-* 修复了 `CompositeConfigEditor` 内无法编辑配置的 bug
+* 修复了 `CompositeConfigEditor` 内无法编辑配置的 bug  
+
+  
+## [1.3.0] - 2024-2-16
+### 新增
+* 添加了状态机 `FSM<T>` 和对应的状态 `FSMState`
+  * `FSM<T>` 将会自动实例化 `T` 指定的状态对象
+  
+
+### 更改
+* 现在 `Tween` 不会在跨场景时自动停止了 
