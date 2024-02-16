@@ -19,11 +19,6 @@ namespace Bingyan
             Instance = this;
         }
 
-        private void Start()
-        {
-            SceneManager.activeSceneChanged += (s1, s2) => StopAll();
-        }
-
         private void Update()
         {
             for (int i = 0; i < tweens.Count; i++)
@@ -44,12 +39,6 @@ namespace Bingyan
                 return true;
             }
             return false;
-        }
-
-        private void StopAll()
-        {
-            for (int i = tweens.Count - 1; i >= 0; i--)
-                tweens[i].Stop(true);
         }
     }
 }
