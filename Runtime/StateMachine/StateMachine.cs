@@ -22,6 +22,11 @@ namespace Bingyan
 
         protected virtual void Awake()
         {
+            if (automatic) Init();
+        }
+
+        protected virtual void Init()
+        {
             DefineStates();
             ChangeState(GetDefaultState());
         }
