@@ -17,7 +17,7 @@ namespace Bingyan
 
         public float TimeScale { get => timeScale; set => timeScale = value; }
 
-        protected Dictionary<Type, FSMState> states;
+        protected Dictionary<Type, FSMState> states = new();
         public FSMState CurrentState { get; private set; }
 
         protected virtual void Awake()
