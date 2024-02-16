@@ -98,7 +98,7 @@ namespace Bingyan
             if (Tweener.Instance.Remove(this))
             {
                 Reset();
-                if (recycle) pool.Push(this);
+                if (recycle && !pool.Contains(this)) pool.Push(this);
             }
         }
 
