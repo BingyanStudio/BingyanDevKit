@@ -25,7 +25,7 @@ namespace Bingyan
             if (automatic) Init();
         }
 
-        protected virtual void Init()
+        public virtual void Init()
         {
             DefineStates();
             ChangeState(GetDefaultState());
