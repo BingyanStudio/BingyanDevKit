@@ -98,7 +98,11 @@ namespace Bingyan
             if (Tweener.Instance.Remove(this))
             {
                 Reset();
-                if (recycle && !pool.Contains(this)) pool.Push(this);
+                if (recycle && !pool.Contains(this))
+                {
+                    pool.Push(this);
+                    Debug.Log($"Tween Recycled: {GetHashCode()}");
+                }
             }
         }
 
@@ -219,6 +223,7 @@ namespace Bingyan
                     b.next.previous = null;
                 }
                 var t = pool.Count > 0 ? pool.Pop() : new Tween();
+                Debug.Log($"Tween spawned: {t.GetHashCode()}");
                 t.Init(b);
                 return t;
             }
