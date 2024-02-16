@@ -164,3 +164,9 @@
 * 现在 `Tween` 改用 `Stack` 作为对象池，而非 Unity 内置的 `ObjectPool<Tween>`
 * 添加了 `Tween` 的内存安全检查，可以阻止用户代码访问已被回收的 `Tween`
 * 添加了 `Tween.Verbose` ，用于打印额外的 Debug 信息
+
+
+## [1.3.1] - 2024-2-16
+### 更改
+* `FSM` 现在不再是泛型模式了
+* `FSM` 现在需要重写 `FSM.DefineStates()` 与 `FSM.GetDefaultState()` 来实现定义所有状态和初始状态
