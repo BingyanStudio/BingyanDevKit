@@ -162,3 +162,5 @@
 
 ### 更改
 * 现在 `Tween` 改用 `Stack` 作为对象池，而非 Unity 内置的 `ObjectPool<Tween>`
+* 添加了 `Tween` 的内存安全检查，可以阻止用户代码访问已被回收的 `Tween`
+* 添加了 `Tween.Verbose` ，用于打印额外的 Debug 信息
