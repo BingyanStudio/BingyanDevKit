@@ -8,9 +8,9 @@ namespace Bingyan
     /// </summary>
     public abstract class FSMState
     {
-        protected FSM<FSMState> Host;
+        protected FSM Host;
 
-        protected FSMState(FSM<FSMState> host)
+        protected FSMState(FSM host)
         {
             Host = host;
         }

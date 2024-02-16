@@ -8,30 +8,35 @@ namespace Bingyan
 {
     /// <summary>
     /// Mono 有限状态机<br/>
-    /// 内部的状态由框架自动生成，你需要在泛型类 T 中提供你自己的状态基类<br/>
     /// 要指定初始状态，只需要在 Start 或 Awake 中调用 <see cref="ChangeState"/>
     /// </summary>
-    /// <typeparam name="T">你的状态基类</typeparam>
-    public abstract class FSM<T> : ProcessableMono where T : FSMState
+    public abstract class FSM : ProcessableMono
     {
         [SerializeField, Title("自主运行")] private bool automatic = true;
         [SerializeField, Title("时间尺度")] private float timeScale = 1;
 
         public float TimeScale { get => timeScale; set => timeScale = value; }
 
-        protected Dictionary<Type, T> states;
-        public T CurrentState { get; private set; }
+        protected Dictionary<Type, FSMState> states;
+        public FSMState CurrentState { get; private set; }
 
         protected virtual void Awake()
         {
-            var stateTypes = typeof(T).Assembly.GetTypes().Where(i => i.IsSubclassOf(typeof(T)) && !i.IsAbstract);
-            states = stateTypes.Select(i =>
-            {
-                var state = Activator.CreateInstance(i, this) as T;
-                state.Init();
-                return state;
-            }).ToDictionary(i => i.GetType(), j => j);
+            DefineStates();
+            ChangeState(GetDefaultState());
         }
+
+        /// <summary>
+        /// 定义该 FSM 拥有的所有状态<br/>
+        /// 使用 <see cref="AddState(FSMState)"/> 定义
+        /// </summary>
+        protected abstract void DefineStates();
+
+        /// <summary>
+        /// 定义该 FSM 的初始状态
+        /// </summary>
+        /// <returns>初始状态类型</returns>
+        protected abstract Type GetDefaultState();
 
         private void Update()
         {
@@ -90,14 +95,27 @@ namespace Bingyan
         }
 
         /// <summary>
+        /// 添加状态<br/>
+        /// </summary>
+        /// <param name="state">要添加的状态</param>
+        protected void AddState(FSMState state)
+        {
+            var type = state.GetType();
+            if (states.ContainsKey(type)) states[type] = state;
+            else states.Add(type, state);
+        }
+
+        /// <summary>
         /// 切换状态<br/>
         /// S 为要切换的状态类型，在找不到时发出警告，并切换为【无状态】。
         /// </summary>
         /// <typeparam name="S">要切换的状态类型</typeparam>
-        public void ChangeState<S>() where S : T
+        public void ChangeState<S>() where S : FSMState => ChangeState(typeof(S));
+
+        private void ChangeState(Type state)
         {
             CurrentState?.OnExit();
-            if (states.TryGetValue(typeof(S), out var value))
+            if (states.TryGetValue(state, out var value))
             {
                 CurrentState = value;
                 CurrentState.OnEnter();
@@ -106,7 +124,7 @@ namespace Bingyan
             {
                 CurrentState = null;
 
-                var sb = new StringBuilder($"{name} 状态机内并不包含状态 {typeof(S)}\n当前包含的状态有: ");
+                var sb = new StringBuilder($"{name} 状态机内并不包含状态 {state}\n当前包含的状态有: ");
                 foreach (var item in states.Keys) sb.AppendLine(item.ToString());
                 Debug.LogWarning(sb.ToString());
             }
