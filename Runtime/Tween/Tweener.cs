@@ -19,6 +19,15 @@ namespace Bingyan
             Instance = this;
         }
 
+        private void Start()
+        {
+            SceneManager.activeSceneChanged += (s1, s2) =>
+            {
+                for (int i = tweens.Count - 1; i >= 0; i--)
+                    tweens[i].Stop(true);
+            };
+        }
+
         private void Update()
         {
             for (int i = 0; i < tweens.Count; i++)
