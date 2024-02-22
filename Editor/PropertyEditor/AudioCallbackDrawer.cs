@@ -18,8 +18,8 @@ namespace Bingyan.Editor
             base.OnGUI(position, property, label);
 
             GUI.Box(new Rect(pos.position, new Vector2(pos.width, GetPropertyHeight(property, label))), "");
-            pos.position += Vector2.one * SPACING * 2;
-            pos.size -= Vector2.right * SPACING * 4;
+            pos.position += Vector2.one * spacing * 2;
+            pos.size -= Vector2.right * spacing * 4;
 
             var attr = fieldInfo.GetCustomAttribute<TooltipAttribute>();
             var title = attr != null ? attr.tooltip : label.text;
@@ -58,10 +58,10 @@ namespace Bingyan.Editor
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            var h = lineHeight + SPACING;
+            var h = lineHeight + spacing;
             var arr = property.FindPropertyRelative("elements");
-            if (arr.arraySize == 0) return h * 4 + SPACING * 4;
-            else return h * (2 + arr.arraySize * 3.5f) + SPACING * 4;
+            if (arr.arraySize == 0) return h * 4 + spacing * 4;
+            else return h * (2 + arr.arraySize * 3.5f) + spacing * 4;
         }
     }
 }

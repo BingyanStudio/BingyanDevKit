@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 
 namespace Bingyan.Editor
 {
@@ -18,24 +19,67 @@ namespace Bingyan.Editor
         {
             base.OnGUI(position, property, label);
             label.text = ((TitleAttribute)attribute).Label;
-            showChild = EditorGUI.PropertyField(pos, property, label, false);
-            if (property.hasVisibleChildren && showChild)
+            
+            switch (property.propertyType)
             {
-                EditorGUI.indentLevel++;
-                var depth = property.depth;
-                while (property.NextVisible(true))
-                {
-                    if (property.depth == depth) break;
-                    Next();
-                    EditorGUI.PropertyField(pos, property);
-                }
-                EditorGUI.indentLevel--;
+                case SerializedPropertyType.Generic:
+                    showChild = EditorGUI.PropertyField(pos, property, label, false);
+                    if (property.hasVisibleChildren && showChild)
+                    {
+                        EditorGUI.indentLevel++;
+                        var depth = property.depth;
+                        while (property.NextVisible(true))
+                        {
+                            if (property.depth == depth) break;
+                            Next();
+                            EditorGUI.PropertyField(pos, property);
+                        }
+                        EditorGUI.indentLevel--;
+                    }
+                    break;
+
+                case SerializedPropertyType.String:
+                    EditorGUI.PropertyField(position, property, label);
+                    break;
+
+                default:
+                    EditorGUI.PropertyField(position, property, label);
+                    break;
             }
+
+            // if (property.propertyType == SerializedPropertyType.String
+            //         && fieldInfo.GetCustomAttributes(false)
+            //                     .Where(i => i is MultilineAttribute)
+            //                     .Count() > 0)
+            //     EditorGUI.PropertyField(position, property, label, false);
+            // else
+            // {
+            //     showChild = EditorGUI.PropertyField(pos, property, label, false);
+
+            //     if (property.hasVisibleChildren && showChild)
+            //     {
+            //         EditorGUI.indentLevel++;
+            //         var depth = property.depth;
+            //         while (property.NextVisible(true))
+            //         {
+            //             if (property.depth == depth) break;
+            //             Next();
+            //             EditorGUI.PropertyField(pos, property);
+            //         }
+            //         EditorGUI.indentLevel--;
+            //     }
+            // }
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return (lineHeight + SPACING) * (showChild ? property.CountInProperty() : 1);
+            if (property.propertyType == SerializedPropertyType.String
+                    && fieldInfo.GetCustomAttributes(false)
+                                .Where(i => i is MultilineAttribute)
+                                .FirstOrDefault() is MultilineAttribute attr)
+                return (lineHeight + spacing) * attr.lines;
+            // return (lineHeight + SPACING) * (showChild ? property.CountInProperty() : 1);
+            return EditorGUI.GetPropertyHeight(property);
         }
     }
 }

@@ -8,10 +8,10 @@ namespace Bingyan.Editor
     /// </summary>
     public abstract class LinedPropertyDrawer : PropertyDrawer
     {
-        protected const float SPACING = 2;
         protected const float TAB = 10;
 
         protected static float lineHeight => EditorGUIUtility.singleLineHeight;
+        protected static float spacing => EditorGUIUtility.standardVerticalSpacing;
         protected Rect pos;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -21,7 +21,7 @@ namespace Bingyan.Editor
 
         protected void Next(float scale = 1)
         {
-            pos.y += scale * (lineHeight + SPACING);
+            pos.y += scale * (lineHeight + spacing);
         }
 
         protected void AddTab()
