@@ -169,4 +169,13 @@
 ## [1.3.1] - 2024-2-16
 ### 更改
 * `FSM` 现在不再是泛型模式了
-* `FSM` 现在需要重写 `FSM.DefineStates()` 与 `FSM.GetDefaultState()` 来实现定义所有状态和初始状态
+* `FSM` 现在需要重写 `FSM.DefineStates()` 与 `FSM.GetDefaultState()` 来实现定义所有状态和初始状态  
+  
+
+## [1.3.2] - 2024-2-22
+### 新增
+* 现在 `TitleAttribute` 对于结构体和 `MultilineAttribute` 增加了支持
+  
+
+### 更改
+* `LinedPropertyDrawer` 现在使用 `EditorGUIUtility.standardVerticalSpacing` 作为默认纵向间距
