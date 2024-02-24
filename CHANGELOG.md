@@ -178,4 +178,9 @@
   
 
 ### 更改
-* `LinedPropertyDrawer` 现在使用 `EditorGUIUtility.standardVerticalSpacing` 作为默认纵向间距
+* `LinedPropertyDrawer` 现在使用 `EditorGUIUtility.standardVerticalSpacing` 作为默认纵向间距  
+
+  
+## [1.3.3] - 2024-2-24
+### 更改
+* 现在 `Processer` 和 `RelayProcesser` 们都使用 `for` 进行循环，以避免在枚举期间调用 `Add()` `Remove()` 出错
