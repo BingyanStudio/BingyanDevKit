@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using LitJson;
 using UnityEngine;
 
@@ -83,8 +86,31 @@ namespace Bingyan
 
         public override void PrintContent()
         {
-            StringBuilder sb = new StringBuilder($"列表 {key}: 长度 {list.Count}\n");
+            StringBuilder sb = new($"列表 {key}: 长度 {list.Count}\n");
             list.ForEach(i => sb.Append($"{i}\n"));
+            Debug.Log(sb);
+        }
+    }
+
+    public class DataStoreSet<T> : DataStore
+    {
+        protected HashSet<T> set;
+        public HashSet<T> Set => set;
+
+        public DataStoreSet(string key) : base(key) { }
+
+        protected override void Save() { base.Save(); Archive.Set(key, JsonMapper.ToJson(set.ToList())); }
+
+        protected override void Load()
+        {
+            set = new(JsonMapper.ToObject<List<T>>(Archive.Get(key, "")) ?? new());
+            base.Load();
+        }
+
+        public override void PrintContent()
+        {
+            StringBuilder sb = new($"集合 {key}: 元素数量 {set.Count}\n");
+            set.ForEach(i => sb.Append($"{i}\n"));
             Debug.Log(sb);
         }
     }
@@ -110,7 +136,7 @@ namespace Bingyan
 
         public override void PrintContent()
         {
-            StringBuilder sb = new StringBuilder($"字典 {key}: 长度 {dict.Count}\n");
+            StringBuilder sb = new($"字典 {key}: 长度 {dict.Count}\n");
             foreach (var item in dict)
                 sb.Append($"{item.Key}: {item.Value}\n");
             Debug.Log(sb.ToString());
@@ -128,7 +154,7 @@ namespace Bingyan
 
         public override void PrintContent()
         {
-            StringBuilder sb = new StringBuilder($"字典 {key}: 长度 {dict.Count}\n");
+            StringBuilder sb = new($"字典 {key}: 长度 {dict.Count}\n");
             foreach (var item in dict)
             {
                 sb.Append($"{item.Key}: \n[\n");
@@ -151,7 +177,7 @@ namespace Bingyan
 
         public override void PrintContent()
         {
-            StringBuilder sb = new StringBuilder($"字典 {key}: 长度 {dict.Count}\n");
+            StringBuilder sb = new($"字典 {key}: 长度 {dict.Count}\n");
             foreach (var item in dict)
             {
                 sb.Append($"{item.Key}: \n[\n");
