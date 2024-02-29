@@ -183,4 +183,10 @@
   
 ## [1.3.3] - 2024-2-24
 ### 更改
-* 现在 `Processer` 和 `RelayProcesser` 们都使用 `for` 进行循环，以避免在枚举期间调用 `Add()` `Remove()` 出错
+* 现在 `Processer` 和 `RelayProcesser` 们都使用 `for` 进行循环，以避免在枚举期间调用 `Add()` `Remove()` 出错  
+
+  
+## [1.3.4] - 2024-2-29
+### 新增
+* `DataStoreSet`: 使用 `HashSet` 实现的数据存储模型  
+* `IEnumerableExtension`: 针对集合的拓展函数，包含 `ForEach` 和 `ForEachIndexed`
