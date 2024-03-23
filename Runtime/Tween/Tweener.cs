@@ -10,18 +10,22 @@ namespace Bingyan
     /// </summary>
     internal class Tweener : MonoBehaviour
     {
-        internal static Tweener Instance { get; private set; }
+        internal const int UPDATE_RATE = 60;
 
-        private List<Tween> tweens = new List<Tween>();
+        internal static Tweener Instance { get; private set; }
+        private List<Tween> tweens = new();
+
+        private float frameTime, frameTimer = 0;
 
         private void Awake()
         {
             Instance = this;
+            frameTime = 1f / UPDATE_RATE;
         }
 
         private void Start()
         {
-            SceneManager.activeSceneChanged += (s1, s2) =>
+            SceneManager.sceneUnloaded += s =>
             {
                 for (int i = tweens.Count - 1; i >= 0; i--)
                     tweens[i].Stop(true);
@@ -30,8 +34,13 @@ namespace Bingyan
 
         private void Update()
         {
-            for (int i = 0; i < tweens.Count; i++)
-                tweens[i].Update(Time.deltaTime);
+            frameTimer += Time.unscaledDeltaTime;
+            if (frameTimer >= frameTime)
+            {
+                frameTimer = 0;
+                for (int i = tweens.Count - 1; i >= 0; i--)
+                    tweens[i].Update(Time.deltaTime);
+            }
         }
 
         internal void Register(Tween t)

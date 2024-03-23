@@ -22,6 +22,17 @@ namespace Bingyan
         /// </summary>
         public static bool Verbose { get; set; } = false;
 
+        /// <summary>
+        /// 所有 <see cref="Tween"/> 的时间尺度
+        /// </summary>
+        public static float TimeScale { get; set; } = 1;
+
+        /// <summary>
+        /// 所有 <see cref="Tween"/> 是否同时暂停?<br/>
+        /// 对于游戏自己的暂停系统来说，修改这个值会比将 <see cref="TimeScale"/> 改为 0 更好一些
+        /// </summary>
+        public static bool GlobalPaused { get; set; } = false;
+
         internal static Stack<Tween> pool = new();
 
         static Tween()
@@ -150,6 +161,8 @@ namespace Bingyan
         internal void Update(float delta)
         {
             if (!running || paused) return;
+            if (GlobalPaused && !builder.unscaled) return;
+            delta = builder.unscaled ? Mathf.Min(1f / 60, Time.unscaledDeltaTime) : delta * TimeScale;
 
             if (!builder.pingpong) NormalUpdate(delta);
             else PingpongUpdate(delta);
@@ -185,7 +198,8 @@ namespace Bingyan
             switch (builder.type)
             {
                 case TweenType.Lerp:
-                    timer = Mathf.Lerp(timer, 1, builder.lerpSpeed);
+                    if (Time.timeScale > 0.99f)
+                        timer = Mathf.Lerp(timer, 1, builder.lerpSpeed);
                     break;
 
                 case TweenType.Linear:
@@ -199,7 +213,8 @@ namespace Bingyan
             switch (builder.type)
             {
                 case TweenType.Lerp:
-                    timer = Mathf.Lerp(timer, pingpongFlag ? 0 : 1, builder.lerpSpeed);
+                    if (Time.timeScale > 0.99f)
+                        timer = Mathf.Lerp(timer, pingpongFlag ? 0 : 1, builder.lerpSpeed);
                     break;
 
                 case TweenType.Linear:
@@ -228,7 +243,7 @@ namespace Bingyan
         {
             internal TweenType type;
 
-            internal bool loop = false, pingpong = false;
+            internal bool loop = false, pingpong = false, unscaled = false;
 
             internal float lerpSpeed;
             internal float linearTime;
@@ -284,10 +299,20 @@ namespace Bingyan
             /// <summary>
             /// 让动画中的执行量从 0 变为 1，再变回 0 ，即让动画从头到尾再到头播放
             /// </summary>
-            /// <returns></returns>
             public Builder Pingpong()
             {
                 pingpong = true;
+                return this;
+            }
+
+            /// <summary>
+            /// 使用未放缩的时间进行动画更新<br/>
+            /// 即: 忽略 <see cref="Time.timeScale"/> 与 <see cref="TimeScale"/><br/>
+            /// 在 <see cref="Time.timeScale"/> 设置为 0，但仍需执行动画的情况下很有用
+            /// </summary>
+            public Builder Unscaled()
+            {
+                unscaled = true;
                 return this;
             }
 
@@ -299,7 +324,6 @@ namespace Bingyan
             /// <para>从而利用这个初始值来构建你的动画</para>
             /// </summary>
             /// <param name="cbk">回调</param>
-            /// <returns></returns>
             public Builder Process(Func<Action<float>> cbk)
             {
                 processCbkCreater = cbk;
@@ -310,7 +334,6 @@ namespace Bingyan
             /// 动画结束时的回调
             /// </summary>
             /// <param name="cbk">回调</param>
-            /// <returns></returns>
             public Builder Finish(Action cbk)
             {
                 finishCbk = cbk;
