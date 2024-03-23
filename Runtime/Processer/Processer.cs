@@ -22,16 +22,18 @@ namespace Bingyan
         /// </summary>
         protected List<T> items = new();
 
+        private int loopIdx = 0;
+
         private void Update()
         {
-            for (int i = items.Count - 1; i >= 0; i--)
-                items[i].Process(Time.deltaTime * TimeScale);
+            for (loopIdx = items.Count - 1; loopIdx >= 0; loopIdx--)
+                items[loopIdx].Process(Time.deltaTime * TimeScale);
         }
 
         private void FixedUpdate()
         {
-            for (int i = items.Count - 1; i >= 0; i--)
-                items[i].PhysicsProcess(Time.fixedDeltaTime * TimeScale);
+            for (loopIdx = items.Count - 1; loopIdx >= 0; loopIdx--)
+                items[loopIdx].PhysicsProcess(Time.fixedDeltaTime * TimeScale);
         }
 
         public virtual void Add(T item)
@@ -41,6 +43,7 @@ namespace Bingyan
 
         public virtual void Remove(T item)
         {
+            if (items.IndexOf(item) < loopIdx) loopIdx--;
             items.Remove(item);
         }
     }
@@ -68,16 +71,18 @@ namespace Bingyan
         /// </summary>
         protected List<T> items = new();
 
+        private int loopIdx = 0;
+
         public override void Process(float delta)
         {
-            for (int i = items.Count - 1; i >= 0; i--)
-                items[i].Process(Time.deltaTime * TimeScale);
+            for (loopIdx = items.Count - 1; loopIdx >= 0; loopIdx--)
+                items[loopIdx].Process(Time.deltaTime * TimeScale);
         }
 
         public override void PhysicsProcess(float delta)
         {
-            for (int i = items.Count - 1; i >= 0; i--)
-                items[i].PhysicsProcess(Time.fixedDeltaTime * TimeScale);
+            for (loopIdx = items.Count - 1; loopIdx >= 0; loopIdx--)
+                items[loopIdx].PhysicsProcess(Time.fixedDeltaTime * TimeScale);
         }
 
         public virtual void Add(T item)
@@ -87,6 +92,7 @@ namespace Bingyan
 
         public virtual void Remove(T item)
         {
+            if (items.IndexOf(item) < loopIdx) loopIdx--;
             items.Remove(item);
         }
     }
@@ -112,16 +118,18 @@ namespace Bingyan
         /// </summary>
         protected List<T> items = new();
 
+        private int loopIdx = 0;
+
         public override void Process(float delta)
         {
-            for (int i = items.Count - 1; i >= 0; i--)
-                items[i].Process(Time.deltaTime * TimeScale);
+            for (loopIdx = items.Count - 1; loopIdx >= 0; loopIdx--)
+                items[loopIdx].Process(Time.deltaTime * TimeScale);
         }
 
         public override void PhysicsProcess(float delta)
         {
-            for (int i = items.Count - 1; i >= 0; i--)
-                items[i].PhysicsProcess(Time.fixedDeltaTime * TimeScale);
+            for (loopIdx = items.Count - 1; loopIdx >= 0; loopIdx--)
+                items[loopIdx].PhysicsProcess(Time.fixedDeltaTime * TimeScale);
         }
 
         public virtual void Add(T item)
@@ -131,6 +139,7 @@ namespace Bingyan
 
         public virtual void Remove(T item)
         {
+            if (items.IndexOf(item) < loopIdx) loopIdx--;
             items.Remove(item);
         }
     }
