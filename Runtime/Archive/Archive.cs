@@ -20,7 +20,7 @@ namespace Bingyan
         /// <summary>
         /// 在缓存数据即将被写入存档时触发
         /// <para>可以参考一下 DataStore 家族的写法</para>
-        /// 另请参阅: <see cref = "Bingyan.DataStore"/>
+        /// 另请参阅: <see cref = "DataStore"/>
         /// </summary>
         public static event Action Saving;
 
@@ -209,6 +209,16 @@ namespace Bingyan
             writer.Close();
 
             Debug.Log($"存档 {saveIndex} 已清空!");
+        }
+
+        /// <summary>
+        /// 删除指定的存档
+        /// </summary>
+        /// <param name="saveIndex">存档序号</param>
+        public static void Delete(int saveIndex)
+        {
+            var path = GetSaveFilePath(saveIndex);
+            File.Delete(path);
         }
 
         /// <summary>
