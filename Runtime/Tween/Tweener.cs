@@ -10,7 +10,7 @@ namespace Bingyan
     /// </summary>
     internal class Tweener : MonoBehaviour
     {
-        internal const int UPDATE_RATE = 60;
+        internal const int UPDATE_RATE = 90;
 
         internal static Tweener Instance { get; private set; }
         private List<Tween> tweens = new();
@@ -37,9 +37,9 @@ namespace Bingyan
             frameTimer += Time.unscaledDeltaTime;
             if (frameTimer >= frameTime)
             {
-                frameTimer = 0;
                 for (int i = tweens.Count - 1; i >= 0; i--)
-                    tweens[i].Update(Time.deltaTime);
+                    tweens[i].Update(frameTimer);
+                frameTimer = 0;
             }
         }
 

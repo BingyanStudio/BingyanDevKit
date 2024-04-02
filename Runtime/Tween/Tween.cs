@@ -162,7 +162,8 @@ namespace Bingyan
         {
             if (!running || paused) return;
             if (GlobalPaused && !builder.unscaled) return;
-            delta = builder.unscaled ? Mathf.Min(1f / 60, Time.unscaledDeltaTime) : delta * TimeScale;
+            delta = builder.unscaled ? delta : delta * TimeScale;
+            if (builder.limitDeltaTime) delta = Mathf.Min(delta, builder.maxDeltaTime);
 
             if (!builder.pingpong) NormalUpdate(delta);
             else PingpongUpdate(delta);
@@ -243,10 +244,9 @@ namespace Bingyan
         {
             internal TweenType type;
 
-            internal bool loop = false, pingpong = false, unscaled = false;
+            internal bool loop = false, pingpong = false, unscaled = false, limitDeltaTime = false;
 
-            internal float lerpSpeed;
-            internal float linearTime;
+            internal float lerpSpeed, linearTime, maxDeltaTime = -1;
 
             internal Func<Action<float>> processCbkCreater;
             internal Action finishCbk;
@@ -313,6 +313,20 @@ namespace Bingyan
             public Builder Unscaled()
             {
                 unscaled = true;
+                return this;
+            }
+
+            /// <summary>
+            /// 限制单次更新最大的间隔时间"输入"<br/>
+            /// 这主要用于切换场景后的第一帧: 由于加载场景时间较长，<see cref="Time.unscaledDeltaTime"/> 会给出一个很大的数字<br/>
+            /// 此时若在 Awake 或 Start 里启动一个 Linear 类型的 <see cref="Tween"/>，则它会几乎立刻结束<br/>
+            /// 因此，你可以使用这个方法来避免该情况
+            /// </summary>
+            /// <returns></returns>
+            public Builder LimitDeltaTime(float max = 1f / 60)
+            {
+                limitDeltaTime = true;
+                maxDeltaTime = max;
                 return this;
             }
 
