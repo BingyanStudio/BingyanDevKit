@@ -189,4 +189,15 @@
 ## [1.3.4] - 2024-2-29
 ### 新增
 * `DataStoreSet`: 使用 `HashSet` 实现的数据存储模型  
-* `IEnumerableExtension`: 针对集合的拓展函数，包含 `ForEach` 和 `ForEachIndexed`
+* `IEnumerableExtension`: 针对集合的拓展函数，包含 `ForEach` 和 `ForEachIndexed`  
+
+  
+## [1.3.5] - 2024-4-2
+### 新增
+* `Tween` 新增 `LimitDeltaTime()` 和 `Unscaled()` 选项
+  * `LimitDeltaTime()` 可以在 `Time.deltaTime` 过大时进行限制，防止因为帧率原因，`Tween.Linear()` 过快完成
+  * `Unscaled()` 允许 `Tween` 在 `Time.timeScale == 0` 的情况下继续运行
+
+### 修复
+* 修复了切换场景时，`Tween` 没有正确终止执行的 bug
+* 修复了在 `IProcessable.Process(float)` 或 `IProcessable.PhysicsProcess(float)` 时使用 `Add()` 或 `Remove()` 导致执行顺序出错的问题
