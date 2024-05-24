@@ -13,6 +13,7 @@ namespace Bingyan
     {
         [SerializeField, Title("模式")] private Mode mode;
         [SerializeField, Title("数量")] private int count;
+        [SerializeField, Title("规则")] private Rule rule;
 
         private void Awake()
         {
@@ -21,12 +22,34 @@ namespace Bingyan
             {
                 case Mode.Horizontal:
                     var width = (transform as RectTransform).rect.width;
-                    grid.cellSize = grid.cellSize.SetX((width - grid.padding.left - grid.padding.right - grid.spacing.x * (count - 1)) / count);
+
+                    switch (rule)
+                    {
+                        case Rule.Cell:
+                            grid.cellSize = grid.cellSize.SetX((width - grid.padding.left - grid.padding.right - grid.spacing.x * (count - 1)) / count);
+                            break;
+
+                        case Rule.Spacing:
+                            grid.spacing = grid.spacing.SetX((width - grid.padding.left - grid.padding.right - grid.cellSize.x * count) / (count - 1));
+                            break;
+                    }
+
                     break;
 
                 case Mode.Vertical:
                     var height = (transform as RectTransform).rect.height;
-                    grid.cellSize = grid.cellSize.SetY((height - grid.padding.top - grid.padding.bottom - grid.spacing.y * (count - 1)) / count);
+
+                    switch (rule)
+                    {
+                        case Rule.Cell:
+                            grid.cellSize = grid.cellSize.SetY((height - grid.padding.top - grid.padding.bottom - grid.spacing.y * (count - 1)) / count);
+                            break;
+
+                        case Rule.Spacing:
+                            grid.spacing = grid.spacing.SetY((height - grid.padding.top - grid.padding.bottom - grid.cellSize.y * count) / (count - 1));
+                            break;
+                    }
+
                     break;
             }
         }
@@ -35,6 +58,12 @@ namespace Bingyan
         {
             [InspectorName("限定列数")] Horizontal,
             [InspectorName("限定行数")] Vertical
+        }
+
+        public enum Rule
+        {
+            [InspectorName("拉伸单元格")] Cell,
+            [InspectorName("拉伸间距")] Spacing
         }
     }
 }
