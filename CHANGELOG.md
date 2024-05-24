@@ -200,4 +200,11 @@
 
 ### 修复
 * 修复了切换场景时，`Tween` 没有正确终止执行的 bug
-* 修复了在 `IProcessable.Process(float)` 或 `IProcessable.PhysicsProcess(float)` 时使用 `Add()` 或 `Remove()` 导致执行顺序出错的问题
+* 修复了在 `IProcessable.Process(float)` 或 `IProcessable.PhysicsProcess(float)` 时使用 `Add()` 或 `Remove()` 导致执行顺序出错的问题  
+
+  
+## [1.4.0] - 2024-4-9
+### 新增
+* 音频工具 `AudioUtils` ，可以实现分贝与绝对音量之间转换
+* UI 网格布局辅助工具 `GridAdapter`, 可以规定行/列数，并让网格内元素尽量占据空间
+* 向量工具 `VectorExtensions`, 可以更方便地修改向量的某一个分量
