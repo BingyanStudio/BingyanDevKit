@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Bingyan
@@ -25,6 +26,14 @@ namespace Bingyan
             return vec;
         }
 
+        public static Vector3 ForEach(this Vector3 vec, Func<float, float> action)
+        {
+            vec.x = action.Invoke(vec.x);
+            vec.y = action.Invoke(vec.y);
+            vec.z = action.Invoke(vec.z);
+            return vec;
+        }
+
         public static Vector2 SetX(this Vector2 vec, float x)
         {
             vec.x = x;
@@ -34,6 +43,13 @@ namespace Bingyan
         public static Vector2 SetY(this Vector2 vec, float y)
         {
             vec.y = y;
+            return vec;
+        }
+
+        public static Vector2 ForEach(this Vector2 vec, Func<float, float> action)
+        {
+            vec.x = action.Invoke(vec.x);
+            vec.y = action.Invoke(vec.y);
             return vec;
         }
 
