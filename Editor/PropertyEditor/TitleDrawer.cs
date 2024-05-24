@@ -19,7 +19,7 @@ namespace Bingyan.Editor
         {
             base.OnGUI(position, property, label);
             label.text = ((TitleAttribute)attribute).Label;
-            
+
             switch (property.propertyType)
             {
                 case SerializedPropertyType.Generic:
@@ -28,7 +28,46 @@ namespace Bingyan.Editor
                     {
                         EditorGUI.indentLevel++;
                         var depth = property.depth;
-                        while (property.NextVisible(true))
+                        property.NextVisible(true);
+                        while (property.NextVisible(false))
+                        {
+                            if (property.depth == depth) break;
+                            Next();
+                            DrawProperty(property);
+                        }
+                        EditorGUI.indentLevel--;
+                    }
+                    break;
+
+                case SerializedPropertyType.String:
+                default:
+                    EditorGUI.PropertyField(position, property, label);
+                    break;
+            }
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (property.propertyType == SerializedPropertyType.String
+                    && fieldInfo.GetCustomAttributes(false)
+                                .Where(i => i is MultilineAttribute)
+                                .FirstOrDefault() is MultilineAttribute attr)
+                return (lineHeight + spacing) * attr.lines;
+            return EditorGUI.GetPropertyHeight(property);
+        }
+
+        private void DrawProperty(SerializedProperty property)
+        {
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Generic:
+                    showChild = EditorGUI.PropertyField(pos, property, false);
+                    if (property.hasVisibleChildren && showChild)
+                    {
+                        EditorGUI.indentLevel++;
+                        var depth = property.depth;
+                        property.NextVisible(true);
+                        while (property.NextVisible(false))
                         {
                             if (property.depth == depth) break;
                             Next();
@@ -39,47 +78,10 @@ namespace Bingyan.Editor
                     break;
 
                 case SerializedPropertyType.String:
-                    EditorGUI.PropertyField(position, property, label);
-                    break;
-
                 default:
-                    EditorGUI.PropertyField(position, property, label);
+                    EditorGUI.PropertyField(pos, property);
                     break;
             }
-
-            // if (property.propertyType == SerializedPropertyType.String
-            //         && fieldInfo.GetCustomAttributes(false)
-            //                     .Where(i => i is MultilineAttribute)
-            //                     .Count() > 0)
-            //     EditorGUI.PropertyField(position, property, label, false);
-            // else
-            // {
-            //     showChild = EditorGUI.PropertyField(pos, property, label, false);
-
-            //     if (property.hasVisibleChildren && showChild)
-            //     {
-            //         EditorGUI.indentLevel++;
-            //         var depth = property.depth;
-            //         while (property.NextVisible(true))
-            //         {
-            //             if (property.depth == depth) break;
-            //             Next();
-            //             EditorGUI.PropertyField(pos, property);
-            //         }
-            //         EditorGUI.indentLevel--;
-            //     }
-            // }
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            if (property.propertyType == SerializedPropertyType.String
-                    && fieldInfo.GetCustomAttributes(false)
-                                .Where(i => i is MultilineAttribute)
-                                .FirstOrDefault() is MultilineAttribute attr)
-                return (lineHeight + spacing) * attr.lines;
-            // return (lineHeight + SPACING) * (showChild ? property.CountInProperty() : 1);
-            return EditorGUI.GetPropertyHeight(property);
         }
     }
 }
