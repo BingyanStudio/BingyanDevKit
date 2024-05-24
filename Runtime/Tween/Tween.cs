@@ -125,7 +125,7 @@ namespace Bingyan
         /// 停止执行这个动画
         /// </summary>
         /// <param name="recycle">停止后，是否将其释放并回收到对象池</param>
-        public void Stop(bool recycle = false)
+        public void Stop(bool recycle = true)
         {
             if (!IsValid())
             {
@@ -135,6 +135,7 @@ namespace Bingyan
 
             if (Tweener.Instance.Remove(this))
             {
+                builder.finallyCbk?.Invoke();
                 Reset();
                 if (recycle)
                 {
@@ -249,7 +250,7 @@ namespace Bingyan
             internal float lerpSpeed, linearTime, maxDeltaTime = -1;
 
             internal Func<Action<float>> processCbkCreater;
-            internal Action finishCbk;
+            internal Action finishCbk, finallyCbk;
 
             internal Builder next, previous;
 
@@ -351,6 +352,17 @@ namespace Bingyan
             public Builder Finish(Action cbk)
             {
                 finishCbk = cbk;
+                return this;
+            }
+
+            /// <summary>
+            /// 动画最后的回调<br/>
+            /// 与 <see cref="Finish"/> 不同，此处的回调会在中途停止时也执行一次
+            /// </summary>
+            /// <param name="cbk">回调</param>
+            public Builder Finally(Action cbk)
+            {
+                finallyCbk = cbk;
                 return this;
             }
 
