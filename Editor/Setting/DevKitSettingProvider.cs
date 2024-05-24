@@ -30,7 +30,7 @@ namespace Bingyan.Editor
                         idListFolds[item.Key] = BeginFoldoutHeaderGroup(idListFolds[item.Key], $"{item.Key}");
                         if (idListFolds[item.Key])
                         {
-                            item.Value.Sort((l, r) => l[0] - r[0]);
+                            item.Value.Sort((l, r) => l.CompareTo(r));
                             foreach (var str in item.Value)
                             {
                                 BeginHorizontal();
