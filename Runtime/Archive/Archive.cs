@@ -202,7 +202,7 @@ namespace Bingyan
         public static void Clear(int saveIndex)
         {
             var path = GetSaveFilePath(saveIndex);
-            StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8);
+            StreamWriter writer = new(path, false, Encoding.UTF8);
             string content = "";
             writer.Write(content);
             writer.Flush();
