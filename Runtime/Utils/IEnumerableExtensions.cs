@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public static class IEnumerableExtensions
 {
     /// <summary>
-    /// 类似于 <see cref="List.ForEach(Action{T})", 但可以用于所有集合/>
+    /// 类似于 <see cref="List.ForEach(Action{T})"/>, 但可以用于所有集合
     /// </summary>
     /// <param name="collection">集合</param>
     /// <param name="callback">回调</param>
@@ -15,7 +15,7 @@ public static class IEnumerableExtensions
     }
 
     /// <summary>
-    /// 遍历所有元素，并传入各个元素与其对应的下标
+    /// 遍历所有元素，并传入各个元素与其对应的下标以进行遍历
     /// </summary>
     /// <param name="list">列表</param>
     /// <param name="callback">回调</param>
