@@ -29,12 +29,12 @@ namespace Bingyan.Editor
                         EditorGUI.indentLevel++;
                         var depth = property.depth;
                         property.NextVisible(true);
-                        while (property.NextVisible(false))
+                        do
                         {
                             if (property.depth == depth) break;
                             Next();
                             DrawProperty(property);
-                        }
+                        } while (property.NextVisible(false));
                         EditorGUI.indentLevel--;
                     }
                     break;
