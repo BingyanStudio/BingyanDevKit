@@ -19,6 +19,12 @@ namespace Bingyan.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            if (property.hasMultipleDifferentValues)
+            {
+                LabelField(position, "字符串 ID 无法多物体同时编辑！");
+                return;
+            }
+
             var attr = attribute as StrIDAttribute;
             IDField(position, property, label, attr);
         }
@@ -151,7 +157,7 @@ namespace Bingyan.Editor
         {
             if (!id.Contains(PREFIX_SEPARATOR)) return id;
             var arr = id.Split(PREFIX_SEPARATOR);
-            return arr[arr.Length - 1];
+            return arr[^1];
         }
     }
 }
