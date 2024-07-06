@@ -28,8 +28,8 @@ namespace Bingyan.Editor
                     {
                         EditorGUI.indentLevel++;
                         var depth = property.depth;
-                        property.NextVisible(true);
-                        while (property.NextVisible(false))
+                        // property.NextVisible(true);
+                        while (property.NextVisible(true))
                         {
                             if (property.depth == depth) break;
                             Next();
