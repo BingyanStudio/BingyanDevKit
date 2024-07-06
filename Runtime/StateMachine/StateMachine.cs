@@ -83,6 +83,16 @@ namespace Bingyan
             CurrentState?.OnColliderExit2D(other);
         }
 
+        private void OnDrawGizmos()
+        {
+            CurrentState?.DrawGizmos();
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            CurrentState?.DrawGizmosSelected();
+        }
+
         public override void Process(float delta)
         {
             if (!CurrentState) return;
