@@ -44,7 +44,7 @@ namespace Bingyan
         /// <summary>
         /// 这个动画是否正在运行
         /// </summary>
-        public bool Running => running;
+        public bool Playing => running;
 
         /// <summary>
         /// 这个动画是否已经暂停
@@ -200,7 +200,7 @@ namespace Bingyan
             switch (builder.type)
             {
                 case TweenType.Lerp:
-                    if (Time.timeScale > 0.99f)
+                    if (delta > 0 || builder.unscaled)
                         timer = Mathf.Lerp(timer, 1, builder.lerpSpeed);
                     break;
 
@@ -215,7 +215,7 @@ namespace Bingyan
             switch (builder.type)
             {
                 case TweenType.Lerp:
-                    if (Time.timeScale > 0.99f)
+                    if (delta > 0 || builder.unscaled)
                         timer = Mathf.Lerp(timer, pingpongFlag ? 0 : 1, builder.lerpSpeed);
                     break;
 
@@ -330,6 +330,13 @@ namespace Bingyan
                 maxDeltaTime = max;
                 return this;
             }
+
+            /// <summary>
+            /// 更新时的回调
+            /// </summary>
+            /// <param name="cbk">回调</param>
+            public Builder Process(Action<float> cbk)
+                => Process(() => cbk);
 
             /// <summary>
             /// 用于创建 “在动画运行时，依据给出的值进行更新的回调” 的回调
