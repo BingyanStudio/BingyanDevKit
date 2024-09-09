@@ -220,3 +220,15 @@
 * 优化了 `TitleAttribute` 在结构体等嵌套元素上的表现
 * 优化了 `StrIDAttribute` 在设置界面的 ID 排序方式
 * 补充了一部分文档注释
+
+
+## [1.4.2] - 2024-9-9
+### 新增
+* `ColorUtils`, `VectorExtensions` 等一系列工具，实现了一些基础功能
+* `FloatRange` 等常用数据结构
+
+### 更改
+* 修正了 `Flow` 的命名空间
+* 修改了 `Processer` 的访问修饰，使其可以被重写
+* 修改了状态机【是否使用 Unity Update】的描述与访问修饰
+* 优化 `Tween.Lerp` 的更新逻辑

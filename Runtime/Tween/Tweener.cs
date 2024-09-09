@@ -38,7 +38,10 @@ namespace Bingyan
             if (frameTimer >= frameTime)
             {
                 for (int i = tweens.Count - 1; i >= 0; i--)
+                {
+                    i = Mathf.Min(i, tweens.Count - 1);
                     tweens[i].Update(frameTimer);
+                }
                 frameTimer = 0;
             }
         }

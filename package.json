@@ -1,6 +1,6 @@
 {
     "name": "org.bingyan.devkit",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "displayName": "Bingyan DevKit",
     "description": "这是冰岩作坊游戏组的游戏开发工具套件！",
     "unity": "2019.1",

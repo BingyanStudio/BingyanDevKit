@@ -9,6 +9,22 @@ namespace Bingyan
     public static class VectorExtensions
     {
         /// <summary>
+        /// 将 <see cref="Vector3"/> 转为 <see cref="Vector2"/>, 抛弃 z 轴分量<br/>
+        /// 比强转型方便!
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        public static Vector2 Vec2(this Vector3 vec) => vec;
+
+        /// <summary>
+        /// 将 <see cref="Vector2"/> 转为 <see cref="Vector3"/>, 添加 z 轴分量为 0 <br/>
+        /// 比强转型方便!
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        public static Vector3 Vec3(this Vector2 vec) => vec;
+
+        /// <summary>
         /// 返回一个仅修改了原向量 x 轴数值的向量
         /// </summary>
         /// <param name="x">新的 x 值</param>
@@ -131,5 +147,29 @@ namespace Bingyan
             color.a = a;
             return color;
         }
+
+        /// <summary>
+        /// 获取方向相同, 长度为 length 的向量
+        /// </summary>
+        /// <param name="length">长度</param>
+        /// <returns>新向量</returns>
+        public static Vector2 SetLength(this Vector2 vec, float length)
+            => vec.normalized * length;
+
+        /// <summary>
+        /// 等效于 Vector2.ClampMagnitude(vec, length)
+        /// </summary>
+        /// <param name="length">限制的最大长度</param>
+        /// <returns>限制后的向量</returns>
+        public static Vector2 LimitLength(this Vector2 vec, float length)
+            => Vector2.ClampMagnitude(vec, length);
+
+        /// <summary>
+        /// 将向量旋转指定角度, 顺时针为正向
+        /// </summary>
+        /// <param name="angle">旋转的角度</param>
+        /// <returns>旋转后的向量</returns>
+        public static Vector2 Rotate(this Vector2 vec, float angle)
+            => Quaternion.Euler(0, 0, angle) * vec;
     }
 }

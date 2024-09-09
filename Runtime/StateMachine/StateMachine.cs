@@ -12,7 +12,7 @@ namespace Bingyan
     /// </summary>
     public abstract class FSM : ProcessableMono
     {
-        [SerializeField, Title("自主运行")] private bool automatic = true;
+        [SerializeField, Title("使用 Unity Update")] protected bool automatic = true;
         [SerializeField, Title("时间尺度")] private float timeScale = 1;
 
         public float TimeScale { get => timeScale; set => timeScale = value; }
@@ -83,6 +83,16 @@ namespace Bingyan
             CurrentState?.OnColliderExit2D(other);
         }
 
+        private void OnDrawGizmos()
+        {
+            CurrentState?.DrawGizmos();
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            CurrentState?.DrawGizmosSelected();
+        }
+
         public override void Process(float delta)
         {
             if (!CurrentState) return;
@@ -117,7 +127,7 @@ namespace Bingyan
         /// <typeparam name="S">要切换的状态类型</typeparam>
         public void ChangeState<S>() where S : FSMState => ChangeState(typeof(S));
 
-        private void ChangeState(Type state)
+        public void ChangeState(Type state)
         {
             CurrentState?.OnExit();
             if (states.TryGetValue(state, out var value))

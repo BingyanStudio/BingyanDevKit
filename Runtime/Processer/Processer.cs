@@ -24,13 +24,13 @@ namespace Bingyan
 
         private int loopIdx = 0;
 
-        private void Update()
+        protected virtual void Update()
         {
             for (loopIdx = items.Count - 1; loopIdx >= 0; loopIdx--)
                 items[loopIdx].Process(Time.deltaTime * TimeScale);
         }
 
-        private void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             for (loopIdx = items.Count - 1; loopIdx >= 0; loopIdx--)
                 items[loopIdx].PhysicsProcess(Time.fixedDeltaTime * TimeScale);
