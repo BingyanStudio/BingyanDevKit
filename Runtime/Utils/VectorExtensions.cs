@@ -171,5 +171,28 @@ namespace Bingyan
         /// <returns>旋转后的向量</returns>
         public static Vector2 Rotate(this Vector2 vec, float angle)
             => Quaternion.Euler(0, 0, angle) * vec;
+
+        /// <summary>
+        /// 对三维向量进行点乘
+        /// </summary>
+        public static float Dot(this Vector3 vec, Vector3 other)
+            => Vector3.Dot(vec, other);
+
+        /// <summary>
+        /// 对三维向量进行叉乘
+        /// </summary>
+        public static Vector3 Cross(this Vector3 vec, Vector3 other)
+            => Vector3.Cross(vec, other);
+
+        /// <summary>
+        /// 对三维向量按元素相乘
+        /// </summary>
+        public static Vector3 Mul(this Vector3 vec, Vector3 other)
+        {
+            vec.x *= other.x;
+            vec.y *= other.y;
+            vec.z *= other.z;
+            return vec;
+        }
     }
 }
