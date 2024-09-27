@@ -23,6 +23,13 @@ namespace Bingyan
     {
         [SerializeField, Title("最小")] private float min;
         [SerializeField, Title("最大")] private float max;
+
+        public FloatRange(float min, float max)
+        {
+            this.min = Mathf.Min(min, max);
+            this.max = Mathf.Max(min, max);
+        }
+
         public readonly float Min => min;
         public readonly float Max => max;
         public readonly float Rand() => UnityEngine.Random.Range(min, max);
@@ -30,6 +37,8 @@ namespace Bingyan
         public readonly float Clamp(float input) => Mathf.Clamp(input, min, max);
 
         public static implicit operator float(FloatRange range) => range.Rand();
+        public static FloatRange operator *(FloatRange left, float right) => new(left.Min * right, left.Max * right);
+        public static FloatRange operator *(float left, FloatRange right) => new(left * right.Min, left * right.Max);
         public readonly float this[float ratio] => Lerp(ratio);
     }
 
