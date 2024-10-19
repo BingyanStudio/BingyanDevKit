@@ -105,7 +105,7 @@ namespace Bingyan.Editor
                  () =>
                  {
                      var name = CompMenuToClassName(i);
-                     var item = ScriptableObject.CreateInstance(name);
+                     var item = CreateInstance(name);
                      item.name = name;
                      item.hideFlags = ShowSubObjs ? HideFlags.None : HideFlags.HideInHierarchy;
                      AssetDatabase.AddObjectToAsset(item, target);
