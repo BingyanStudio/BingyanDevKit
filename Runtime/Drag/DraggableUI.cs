@@ -10,6 +10,7 @@ namespace Bingyan
     /// </summary>
     public abstract class DraggableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
+        public bool Dragging => dragging;
         private bool dragging = false;
         private DroppableUI target;
 
@@ -81,6 +82,8 @@ namespace Bingyan
                 if (i.CanDrop(this))
                     i.DisplayDroppable();
             });
+
+            OnDrag(eventData);
         }
 
         public virtual void OnPointerUp(PointerEventData eventData)
