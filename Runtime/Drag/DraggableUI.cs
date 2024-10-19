@@ -88,8 +88,6 @@ namespace Bingyan
             if (!dragging) return;
             dragging = false;
 
-            OnEndDrag();
-
             if (target && OnDrop())
             {
                 target.OnDrop(this);
@@ -97,10 +95,12 @@ namespace Bingyan
             }
             else ResetDragObj();
 
+            OnEndDrag();
+
             DroppableUI.GetDroppables().ForEach(i => i.DisplayNormal());
         }
 
-        public void ResetDragObj()
+        public virtual void ResetDragObj()
         {
             var dragObj = GetDragObjTransform();
             dragObj.position = originalPos;
