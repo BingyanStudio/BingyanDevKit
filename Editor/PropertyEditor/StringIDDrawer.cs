@@ -70,7 +70,6 @@ namespace Bingyan.Editor
             list.Insert(1, "搜索");
             list.Insert(2, allowNew ? "新建..." : "手动输入...");
 
-
             if (!property.stringValue.StartsWith(MANUAL_INPUT_SIGNATURE))
             {
                 int selected;

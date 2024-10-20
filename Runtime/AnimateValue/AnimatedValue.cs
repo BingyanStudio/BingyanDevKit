@@ -22,6 +22,12 @@ namespace Bingyan
 
         protected abstract bool UpdateValue(float time, T current, T target, out T result);
 
+        public void SetValue(T value)
+        {
+            this.value = value;
+            onValueChanged?.Invoke(value);
+        }
+
         public void SetTarget(T target)
         {
             this.target = target;
