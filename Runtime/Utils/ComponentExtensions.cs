@@ -29,5 +29,31 @@ namespace Bingyan
             result = component.GetComponentInParent<T>(includeInactive);
             return result != null;
         }
+
+        /// <summary>
+        /// 按路径获取组件
+        /// </summary>
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="comp">开始搜索的组件（根）</param>
+        /// <param name="path">路径</param>
+        /// <returns>按路径找到的组件</returns>
+        public static T GetComp<T>(this Component comp, string path) where T : Component
+            => comp.transform.Find(path).GetComponent<T>();
+
+        /// <summary>
+        /// 按路径尝试获取组件
+        /// </summary>
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="comp">开始搜索的组件（根）</param>
+        /// <param name="path">路径</param>
+        /// <param name="result">按照路径找到的组件</param>
+        /// <returns>是否找到</returns>
+        public static bool TryGetComp<T>(this Component comp, string path, out T result) where T : Component
+        {
+            Transform tr;
+            result = null;
+            if (tr = comp.transform.Find(path)) return tr.TryGetComponent(out result);
+            else return false;
+        }
     }
 }
