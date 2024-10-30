@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Bingyan.EasyEdit
+namespace Bingyan.Editor
 {
     [InitializeOnLoad]
-    public static class Vector3SceneHelper
+    public static class EasyPositionEditSceneMonitor
     {
         private class PositionInfo
         {
@@ -24,7 +24,7 @@ namespace Bingyan.EasyEdit
         // Key consists of the instance ID, and the property path of the designated field
         private static Dictionary<(int, string), PositionInfo> editingInstances;
 
-        static Vector3SceneHelper()
+        static EasyPositionEditSceneMonitor()
         {
             editingInstances = new();
             SceneView.duringSceneGui += OnDuringSceneGUI;

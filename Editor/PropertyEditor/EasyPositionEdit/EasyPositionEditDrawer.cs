@@ -1,13 +1,13 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Bingyan.EasyEdit
+namespace Bingyan.Editor
 {
     /// <summary>
     /// Adds a button to the inspector that allows the user to drag the Vector3 position in the scene view
     /// </summary>
-    [CustomPropertyDrawer(typeof(EasyLocationAttribute))]
-    public class Vector3Drawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(EasyPositionEditAttribute))]
+    public class EasyPositionEditDrawer : PropertyDrawer
     {
         public override bool CanCacheInspectorGUI(SerializedProperty property) => true;
 
@@ -31,7 +31,7 @@ namespace Bingyan.EasyEdit
 
             var id = property.serializedObject.targetObject.GetInstanceID();
             var path = property.propertyPath;
-            var positionType = ((EasyLocationAttribute)attribute).positionType;
+            var positionType = ((EasyPositionEditAttribute)attribute).positionType;
             
             property.serializedObject.Update();
 
@@ -40,7 +40,7 @@ namespace Bingyan.EasyEdit
             nextLineRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             nextLineRect.height /= 2;
 
-            if (!Vector3SceneHelper.IsSelected(id, path))
+            if (!EasyPositionEditSceneMonitor.IsSelected(id, path))
             {
                 // Original Vector3 value, written like this for consistency
                 property.vector3Value = EditorGUI.Vector3Field(position, label, property.vector3Value);
@@ -48,15 +48,15 @@ namespace Bingyan.EasyEdit
 
                 if (GUI.Button(nextLineRect, "Edit in Scene"))
                 {
-                    Vector3SceneHelper.Select(id, path, positionType, property.vector3Value);
+                    EasyPositionEditSceneMonitor.Select(id, path, positionType, property.vector3Value);
                     SceneView.RepaintAll();
                 }
             }
             else
             {
-                var originalEditedPos = Vector3SceneHelper.GetPosition(id, path);
+                var originalEditedPos = EasyPositionEditSceneMonitor.GetPosition(id, path);
                 var editedPos = EditorGUI.Vector3Field(position, label, originalEditedPos);
-                Vector3SceneHelper.SetPosition(id, path, editedPos);
+                EasyPositionEditSceneMonitor.SetPosition(id, path, editedPos);
                 HandleUtility.Repaint();
 
                 float elementWidth = nextLineRect.width / 4;
@@ -68,14 +68,14 @@ namespace Bingyan.EasyEdit
 
                 if (GUI.Button(applyButtonRect, "Apply"))
                 {
-                    property.vector3Value = Vector3SceneHelper.GetPosition(id, path);
+                    property.vector3Value = EasyPositionEditSceneMonitor.GetPosition(id, path);
                     property.serializedObject.ApplyModifiedProperties();
-                    Vector3SceneHelper.Deselect(id, path);
+                    EasyPositionEditSceneMonitor.Deselect(id, path);
                 }
 
                 if (GUI.Button(cancelButtonRect, "Cancel"))
                 {
-                    Vector3SceneHelper.Deselect(id, path);
+                    EasyPositionEditSceneMonitor.Deselect(id, path);
                 }
             }
             EditorGUI.EndProperty();
