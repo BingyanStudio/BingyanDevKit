@@ -85,7 +85,7 @@ namespace Bingyan.Editor
                     PositionType.World => (positionData.position, "World Position"),
                     PositionType.Local => (target.parent ? target.parent.TransformPoint(positionData.position) : positionData.position, "Local Position"),
                     PositionType.WorldRelative => (target.position + positionData.position, "World Relative Position"),
-                    PositionType.LocalRelative => (target.TransformPoint(target.localPosition + positionData.position), "Local Relative Position"),
+                    PositionType.LocalRelative => (target.TransformPoint(positionData.position), "Local Relative Position"),
                     _ => (Vector3.zero, "Unknown Position Type")
                 };
 
@@ -97,7 +97,7 @@ namespace Bingyan.Editor
                     PositionType.World => newPosition,
                     PositionType.Local => target.parent ? target.parent.InverseTransformPoint(newPosition) : newPosition,
                     PositionType.WorldRelative => newPosition - target.position,
-                    PositionType.LocalRelative => target.InverseTransformPoint(newPosition) - target.localPosition,
+                    PositionType.LocalRelative => target.InverseTransformPoint(newPosition),
                     _ => Vector3.zero
                 };
             }
