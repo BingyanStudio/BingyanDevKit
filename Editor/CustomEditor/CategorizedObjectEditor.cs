@@ -15,7 +15,7 @@ public class CategorizedObjectEditor : Editor
     private static readonly List<string> catOrder = new();
     private static readonly Dictionary<string, List<string>> subcatOrder = new();
 
-    private readonly HashSet<string> catFoldedSet = new(), subFoldedSet = new();
+    private readonly HashSet<string> catOpenedSet = new(), subOpenedSet = new();
 
     private static void Init()
     {
@@ -111,14 +111,14 @@ public class CategorizedObjectEditor : Editor
                 bool renderTitle = cat.Length > 0;
                 if (renderTitle)
                 {
-                    if (EditorGUILayout.Foldout(!catFoldedSet.Contains(cat), cat, true, catStyle))
+                    if (EditorGUILayout.Foldout(catOpenedSet.Contains(cat), cat, true, catStyle))
                     {
-                        catFoldedSet.Remove(cat);
+                        catOpenedSet.Add(cat);
                         EditorGUILayout.Space(EditorGUIUtility.standardVerticalSpacing * 2);
                     }
                     else
                     {
-                        catFoldedSet.Add(cat);
+                        catOpenedSet.Remove(cat);
                         EditorGUILayout.Space(catSpacing);
                         continue;
                     }
@@ -133,14 +133,14 @@ public class CategorizedObjectEditor : Editor
                     {
                         EditorGUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
                         EditorGUILayout.BeginVertical(subBoxStyle);
-                        if (EditorGUILayout.Foldout(!subFoldedSet.Contains(id), sub, true, subStyle))
+                        if (EditorGUILayout.Foldout(subOpenedSet.Contains(id), sub, true, subStyle))
                         {
-                            subFoldedSet.Remove(id);
+                            subOpenedSet.Add(id);
                             EditorGUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
                         }
                         else
                         {
-                            subFoldedSet.Add(id);
+                            subOpenedSet.Remove(id);
                             EditorGUILayout.EndVertical();
                             EditorGUILayout.Space(subSpacing);
                             continue;
