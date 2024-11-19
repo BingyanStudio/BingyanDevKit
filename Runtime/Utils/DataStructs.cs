@@ -14,7 +14,14 @@ namespace Bingyan
         [SerializeField, Title("最小")] private int min;
         [SerializeField, Title("最大")] private int max;
 
+        /// <summary>
+        /// 范围的最小值
+        /// </summary>
         public readonly int Min => min;
+
+        /// <summary>
+        /// 范围的最大值
+        /// </summary>
         public readonly int Max => max;
 
         /// <summary>
@@ -24,7 +31,7 @@ namespace Bingyan
         public readonly int Rand() => UnityEngine.Random.Range(min, max + 1);
 
         /// <summary>
-        /// 将一个值钳制在最大-最小值范围内
+        /// 将一个值钳制在最小-最小值范围内
         /// </summary>
         /// <param name="input">需要钳制的值</param>
         /// <returns>钳制后的结果</returns>
@@ -50,7 +57,14 @@ namespace Bingyan
             this.max = Mathf.Max(min, max);
         }
 
+        /// <summary>
+        /// 范围的最小值
+        /// </summary>
         public readonly float Min => min;
+
+        /// <summary>
+        /// 范围的最大值
+        /// </summary>
         public readonly float Max => max;
 
         /// <summary>
