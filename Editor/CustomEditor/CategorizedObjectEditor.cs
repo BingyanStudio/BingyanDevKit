@@ -44,7 +44,7 @@ public class CategorizedObjectEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        if (target.GetType().GetCustomAttribute<CategorizeAttribute>() == null) base.OnInspectorGUI();
+        if (target.GetType().GetCustomAttribute<AdvancedEditorAttribute>() == null) base.OnInspectorGUI();
         else
         {
             if (catStyle == null) Init();
@@ -164,5 +164,7 @@ public class CategorizedObjectEditor : Editor
                 }
             }
         }
+
+        serializedObject.ApplyModifiedProperties();
     }
 }
