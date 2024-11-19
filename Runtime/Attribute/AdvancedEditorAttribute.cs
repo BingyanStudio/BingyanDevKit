@@ -7,5 +7,5 @@ using UnityEngine;
 /// 部分其他 Attribute 依赖该 Attribute 发挥效果<br/>
 /// 例如 <see cref="CategoryAttribute"/>
 /// </summary>
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 public class AdvancedEditorAttribute : PropertyAttribute { }
