@@ -166,8 +166,7 @@ namespace Bingyan
             delta = builder.unscaled ? delta : delta * TimeScale;
             if (builder.limitDeltaTime) delta = Mathf.Min(delta, builder.maxDeltaTime);
 
-            if (!builder.pingpong) NormalUpdate(delta);
-            else PingpongUpdate(delta);
+            Update(delta, builder.pingpong && pingpongFlag);
             if (timer >= 1 - 1e-3) timer = 1;
             else if (timer <= 1e-3) timer = 0;
 
@@ -195,32 +194,17 @@ namespace Bingyan
             }
         }
 
-        private void NormalUpdate(float delta)
+        private void Update(float delta, bool pingpong)
         {
             switch (builder.type)
             {
                 case TweenType.Lerp:
                     if (delta > 0 || builder.unscaled)
-                        timer = Mathf.Lerp(timer, 1, builder.lerpSpeed);
+                        timer = Mathf.Lerp(timer, pingpong ? 0 : 1, builder.arg);
                     break;
 
                 case TweenType.Linear:
-                    timer += delta / builder.linearTime;
-                    break;
-            }
-        }
-
-        private void PingpongUpdate(float delta)
-        {
-            switch (builder.type)
-            {
-                case TweenType.Lerp:
-                    if (delta > 0 || builder.unscaled)
-                        timer = Mathf.Lerp(timer, pingpongFlag ? 0 : 1, builder.lerpSpeed);
-                    break;
-
-                case TweenType.Linear:
-                    timer += (pingpongFlag ? -1 : 1) * delta / builder.linearTime;
+                    timer += (pingpong ? -1 : 1) * delta / builder.arg;
                     break;
             }
         }
@@ -231,7 +215,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="speed">变换速度</param>
         /// <returns>用于配置这个Tween的Builder对象</returns>
-        public static Builder Lerp(float speed = 0.1f) => new(TweenType.Lerp) { lerpSpeed = speed };
+        public static Builder Lerp(float speed = 0.1f) => new(TweenType.Lerp) { arg = speed };
 
         /// <summary>
         /// 以 线性 方式进行过渡
@@ -239,7 +223,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="length">总时长</param>
         /// <returns>用于配置这个Tween的Builder对象</returns>
-        public static Builder Linear(float length = 0.1f) => new(TweenType.Linear) { linearTime = length };
+        public static Builder Linear(float length = 0.1f) => new(TweenType.Linear) { arg = length };
 
         public class Builder
         {
@@ -247,7 +231,7 @@ namespace Bingyan
 
             internal bool loop = false, pingpong = false, unscaled = false, limitDeltaTime = false;
 
-            internal float lerpSpeed, linearTime, maxDeltaTime = -1;
+            internal float arg, maxDeltaTime = -1;
 
             internal Func<Action<float>> processCbkCreater;
             internal Action finishCbk, finallyCbk;

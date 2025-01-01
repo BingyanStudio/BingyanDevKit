@@ -71,6 +71,36 @@ namespace Bingyan
         }
 
         /// <summary>
+        /// 将向量的 X 分量翻转
+        /// </summary>
+        /// <returns>翻转后的新向量</returns>
+        public static Vector3 FlipX(this Vector3 vec)
+        {
+            vec.x = -vec.x;
+            return vec;
+        }
+
+        /// <summary>
+        /// 将向量的 Y 分量翻转
+        /// </summary>
+        /// <returns>翻转后的新向量</returns>
+        public static Vector3 FlipY(this Vector3 vec)
+        {
+            vec.y = -vec.y;
+            return vec;
+        }
+
+        /// <summary>
+        /// 将向量的 Z 分量翻转
+        /// </summary>
+        /// <returns>翻转后的新向量</returns>
+        public static Vector3 FlipZ(this Vector3 vec)
+        {
+            vec.z = -vec.z;
+            return vec;
+        }
+
+        /// <summary>
         /// 返回一个仅修改了原向量 x 轴数值的向量
         /// </summary>
         /// <param name="x">新的 x 值</param>
@@ -89,6 +119,46 @@ namespace Bingyan
         public static Vector2 SetY(this Vector2 vec, float y)
         {
             vec.y = y;
+            return vec;
+        }
+
+        /// <summary>
+        /// 将向量的 X 分量翻转
+        /// </summary>
+        /// <returns>翻转后的新向量</returns>
+        public static Vector2 FlipX(this Vector2 vec)
+        {
+            vec.x = -vec.x;
+            return vec;
+        }
+
+        /// <summary>
+        /// 若输入的数据小于 0 则将向量的 X 分量翻转
+        /// </summary>
+        /// <returns>翻转后的新向量</returns>
+        public static Vector2 FlipX(this Vector2 vec, float dir)
+        {
+            if (dir < 0) vec.x = -vec.x;
+            return vec;
+        }
+
+        /// <summary>
+        /// 将向量的 Y 分量翻转
+        /// </summary>
+        /// <returns>翻转后的新向量</returns>
+        public static Vector2 FlipY(this Vector2 vec)
+        {
+            vec.y = -vec.y;
+            return vec;
+        }
+
+        /// <summary>
+        /// 若输入的数据小于 0 则将向量的 Y 分量翻转
+        /// </summary>
+        /// <returns>翻转后的新向量</returns>
+        public static Vector2 FlipY(this Vector2 vec, float dir)
+        {
+            if (dir < 0) vec.y = -vec.y;
             return vec;
         }
 
@@ -171,6 +241,12 @@ namespace Bingyan
         /// <returns>旋转后的向量</returns>
         public static Vector2 Rotate(this Vector2 vec, float angle)
             => Quaternion.Euler(0, 0, angle) * vec;
+
+        /// <summary>
+        /// 对二维向量进行点乘
+        /// </summary>
+        public static float Dot(this Vector2 vec, Vector2 other)
+            => Vector2.Dot(vec, other);
 
         /// <summary>
         /// 对三维向量进行点乘

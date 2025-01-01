@@ -55,5 +55,13 @@ namespace Bingyan
             if (tr = comp.transform.Find(path)) return tr.TryGetComponent(out result);
             else return false;
         }
+
+        /// <summary>
+        /// 直接以 <see cref="Vector2"/> 的形式获取 <see cref="Transform"/> 的位置
+        /// </summary>
+        /// <param name="tr">物体的 <see cref="Transform"/> 组件</param>
+        /// <returns><see cref="Vector2"/> 位置</returns>
+        public static Vector2 Pos2D(this Component comp)
+            => comp.transform.position.Vec2();
     }
 }

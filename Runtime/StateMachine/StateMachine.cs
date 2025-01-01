@@ -43,52 +43,52 @@ namespace Bingyan
         /// <returns>初始状态类型</returns>
         protected abstract Type GetDefaultState();
 
-        private void Update()
+        protected virtual void Update()
         {
             if (automatic) Process(Time.deltaTime);
         }
 
-        private void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             if (automatic) PhysicsProcess(Time.fixedDeltaTime);
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        protected virtual void OnTriggerEnter2D(Collider2D other)
         {
             CurrentState?.OnTriggerEnter2D(other);
         }
 
-        private void OnTriggerStay2D(Collider2D other)
+        protected virtual void OnTriggerStay2D(Collider2D other)
         {
             CurrentState?.OnTriggerStay2D(other);
         }
 
-        private void OnTriggerExit2D(Collider2D other)
+        protected virtual void OnTriggerExit2D(Collider2D other)
         {
             CurrentState?.OnTriggerExit2D(other);
         }
 
-        private void OnCollisionEnter2D(Collision2D other)
+        protected virtual void OnCollisionEnter2D(Collision2D other)
         {
             CurrentState?.OnColliderEnter2D(other);
         }
 
-        private void OnCollisionStay2D(Collision2D other)
+        protected virtual void OnCollisionStay2D(Collision2D other)
         {
             CurrentState?.OnColliderStay2D(other);
         }
 
-        private void OnCollisionExit2D(Collision2D other)
+        protected virtual void OnCollisionExit2D(Collision2D other)
         {
             CurrentState?.OnColliderExit2D(other);
         }
 
-        private void OnDrawGizmos()
+        protected virtual void OnDrawGizmos()
         {
             CurrentState?.DrawGizmos();
         }
 
-        private void OnDrawGizmosSelected()
+        protected virtual void OnDrawGizmosSelected()
         {
             CurrentState?.DrawGizmosSelected();
         }
