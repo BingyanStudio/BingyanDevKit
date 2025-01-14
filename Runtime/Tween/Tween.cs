@@ -44,17 +44,19 @@ namespace Bingyan
         /// <summary>
         /// 这个动画是否正在运行
         /// </summary>
-        public bool Playing => running;
+        public bool Playing => Tweener.Instance.IsRunning(this);
 
         /// <summary>
         /// 这个动画是否已经暂停
         /// </summary>
         public bool Paused => paused;
 
+        private ulong ID => Tweener.Instance.GetID(this);
+
         private Builder builder;
 
         private float timer = 0;
-        private bool running = false, paused = false, pingpongFlag = false, recycleOnFinish = false;
+        private bool paused = false, pingpongFlag = false;
         private Action<float> processCbk;
 
         private void Init(Builder builder)
@@ -66,10 +68,8 @@ namespace Bingyan
         private void Reset()
         {
             timer = 0;
-            running = false;
             paused = false;
             pingpongFlag = false;
-            recycleOnFinish = false;
             processCbk = null;
         }
 
@@ -77,28 +77,41 @@ namespace Bingyan
         /// 开始执行这个动画
         /// </summary>
         /// <param name="recycle">结束后，是否将其释放并回收到对象池</param>
-        public void Play(bool recycle = true)
+        public TweenHandle Play()
         {
-            if (running) return;
+            if (Playing) return TweenHandle.Invalid;
             if (!IsValid())
             {
                 if (Verbose) Debug.LogWarning("该对象已经被回收，而你仍然尝试播放它！");
-                return;
+                return TweenHandle.Invalid;
             }
-            running = true;
-            recycleOnFinish = recycle;
 
             processCbk = builder.processCbkCreater?.Invoke();
 
-            Tweener.Instance.Register(this);
+            return new(Tweener.Instance.Register(this));
+        }
+
+        private TweenHandle Play(ulong id)
+        {
+            if (Playing) return TweenHandle.Invalid;
+            if (!IsValid())
+            {
+                if (Verbose) Debug.LogWarning("该对象已经被回收，而你仍然尝试播放它！");
+                return TweenHandle.Invalid;
+            }
+
+            processCbk = builder.processCbkCreater?.Invoke();
+            Tweener.Instance.Register(id, this);
+
+            return new(id);
         }
 
         /// <summary>
         /// 暂停动画，只能在动画运行时调用
         /// </summary>
-        public void Pause()
+        internal void Pause()
         {
-            if (!running) return;
+            if (!Playing) return;
             if (!IsValid())
             {
                 if (Verbose) Debug.LogWarning("该对象已经被回收，而你仍然尝试暂停它！");
@@ -110,9 +123,9 @@ namespace Bingyan
         /// <summary>
         /// 继续动画，只能在动画运行时调用
         /// </summary>
-        public void Resume()
+        internal void Resume()
         {
-            if (!running) return;
+            if (!Playing) return;
             if (!IsValid())
             {
                 if (Verbose) Debug.LogWarning("该对象已经被回收，而你仍然尝试继续它！");
@@ -125,7 +138,7 @@ namespace Bingyan
         /// 停止执行这个动画
         /// </summary>
         /// <param name="recycle">停止后，是否将其释放并回收到对象池</param>
-        public void Stop(bool recycle = true)
+        public void Stop()
         {
             if (!IsValid())
             {
@@ -137,11 +150,8 @@ namespace Bingyan
             {
                 builder.finallyCbk?.Invoke();
                 Reset();
-                if (recycle)
-                {
-                    pool.Push(this);
-                    if (Verbose) Debug.Log($"Tween 被回收: {GetHashCode()}");
-                }
+                pool.Push(this);
+                if (Verbose) Debug.Log($"Tween 被回收: {GetHashCode()}");
             }
         }
 
@@ -154,14 +164,14 @@ namespace Bingyan
         private void Finish()
         {
             builder.finishCbk?.Invoke();
-            Stop(recycleOnFinish);
+            Stop();
 
-            builder.next?.Build().Play(recycleOnFinish);
+            builder.next?.Build().Play(ID);
         }
 
         internal void Update(float delta)
         {
-            if (!running || paused) return;
+            if (!Playing || paused) return;
             if (GlobalPaused && !builder.unscaled) return;
             delta = builder.unscaled ? delta : delta * TimeScale;
             if (builder.limitDeltaTime) delta = Mathf.Min(delta, builder.maxDeltaTime);
@@ -363,6 +373,36 @@ namespace Bingyan
                 b.previous = this;
                 return b;
             }
+        }
+    }
+
+    public readonly struct TweenHandle
+    {
+        public static readonly TweenHandle Invalid = new(ulong.MaxValue);
+
+        private readonly ulong id;
+
+        public TweenHandle(ulong id)
+        {
+            this.id = id;
+        }
+
+        public readonly void Stop()
+        {
+            if (Tweener.Instance.TryGet(id, out var t))
+                t.Stop();
+        }
+
+        public readonly void Pause()
+        {
+            if (Tweener.Instance.TryGet(id, out var t))
+                t.Pause();
+        }
+
+        public readonly void Resume()
+        {
+            if (Tweener.Instance.TryGet(id, out var t))
+                t.Resume();
         }
     }
 
