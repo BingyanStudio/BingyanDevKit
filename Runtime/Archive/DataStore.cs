@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using LitJson;
 using UnityEngine;
 
@@ -80,7 +78,7 @@ namespace Bingyan
         protected override void Save() { base.Save(); Archive.Set(key, JsonMapper.ToJson(list)); }
         protected override void Load()
         {
-            list = JsonMapper.ToObject<List<T>>(Archive.Get(key, "")) ?? new List<T>();
+            list = JsonMapper.ToObject<List<T>>(Archive.Get(key, "")) ?? new();
             base.Load();
         }
 

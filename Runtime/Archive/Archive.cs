@@ -37,14 +37,14 @@ namespace Bingyan
         /// <summary>
         /// 所有的转换器，控制某些 LitJson 无法解析的类型进行序列化/反序列化
         /// </summary>
-        private static List<DataParser> parsers = new();
+        private static readonly List<DataParser> parsers = new();
 
         /// <summary>
         /// 缓存字典，是外界访问与存档之间的桥梁。
         /// </summary>
         /// <typeparam name="string">键</typeparam>
         /// <typeparam name="object">值</typeparam>
-        private static Dictionary<string, object> datas = new Dictionary<string, object>();
+        private static Dictionary<string, object> datas = new();
 
         // 注册部分解析器
         static Archive()
@@ -196,6 +196,14 @@ namespace Bingyan
         }
 
         /// <summary>
+        /// 清除当前缓存的数据
+        /// </summary>
+        public static void Clear()
+        {
+            datas.Clear();
+        }
+
+        /// <summary>
         /// 清除指定存档的数据
         /// </summary>
         /// <param name="saveIndex">存档序号</param>
@@ -326,7 +334,7 @@ namespace Bingyan
             public object Import(string json) => importer.Invoke(TrimPrefix(json));
             public string Export(object obj) => prefix + exporter.Invoke(obj);
 
-            private string TrimPrefix(string str) => str.Substring(prefix.Length, str.Length - prefix.Length);
+            private string TrimPrefix(string str) => str[prefix.Length..];
 
             public DataParser(Type target, string prefix, Func<string, object> importer, Func<object, string> exporter)
             {
