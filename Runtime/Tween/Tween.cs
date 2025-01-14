@@ -35,12 +35,6 @@ namespace Bingyan
 
         internal static Stack<Tween> pool = new();
 
-        static Tween()
-        {
-            var go = new GameObject("Tweener", typeof(Tweener));
-            UnityEngine.Object.DontDestroyOnLoad(go);
-        }
-
         /// <summary>
         /// 这个动画是否正在运行
         /// </summary>
@@ -139,7 +133,7 @@ namespace Bingyan
         /// 停止执行这个动画
         /// </summary>
         /// <param name="recycle">停止后，是否将其释放并回收到对象池</param>
-        public void Stop()
+        internal void Stop()
         {
             if (!IsValid())
             {
@@ -381,7 +375,7 @@ namespace Bingyan
 
     public readonly struct TweenHandle
     {
-        public static readonly TweenHandle Invalid = new(ulong.MaxValue);
+        public static readonly TweenHandle Invalid = new(0);
 
         private readonly ulong id;
 

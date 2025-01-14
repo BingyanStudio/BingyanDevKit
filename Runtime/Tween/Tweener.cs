@@ -12,13 +12,19 @@ namespace Bingyan
     {
         internal const int UPDATE_RATE = 90;
 
-        internal static ulong handleCounter = 0;
+        internal static ulong handleCounter = 1;    // 从 1 开始，0 表示空！
 
         internal static Tweener Instance { get; private set; }
         private readonly List<Tween> tweens = new();
         private readonly BiDictionary<Tween, ulong> tweenHandles = new();
 
         private float frameTime, frameTimer = 0;
+
+        static Tweener()
+        {
+            var go = new GameObject("Tweener", typeof(Tweener));
+            DontDestroyOnLoad(go);
+        }
 
         private void Awake()
         {
@@ -53,7 +59,7 @@ namespace Bingyan
         {
             if (tweens.Contains(t)) return ulong.MaxValue;
 
-            var id = handleCounter++;
+            var id = handleCounter == ulong.MaxValue ? 1 : handleCounter++;
             Register(id, t);
             return id;
         }
