@@ -88,7 +88,8 @@ namespace Bingyan
 
             processCbk = builder.processCbkCreater?.Invoke();
 
-            return new(Tweener.Instance.Register(this));
+            var id = Tweener.Instance.Register(this);
+            return new(id);
         }
 
         private TweenHandle Play(ulong id)
@@ -164,9 +165,11 @@ namespace Bingyan
         private void Finish()
         {
             builder.finishCbk?.Invoke();
+
+            var id = ID;    // 保留上一次 ID
             Stop();
 
-            builder.next?.Build().Play(ID);
+            builder.next?.Build().Play(id);
         }
 
         internal void Update(float delta)
