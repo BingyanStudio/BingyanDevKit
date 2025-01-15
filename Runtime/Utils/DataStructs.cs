@@ -14,6 +14,12 @@ namespace Bingyan
         [SerializeField, Title("最小")] private int min;
         [SerializeField, Title("最大")] private int max;
 
+        public IntRange(int min, int max)
+        {
+            this.min = Mathf.Min(min, max);
+            this.max = Mathf.Max(min, max);
+        }
+
         /// <summary>
         /// 范围的最小值
         /// </summary>
@@ -38,6 +44,10 @@ namespace Bingyan
         public readonly int Clamp(int input) => Mathf.Clamp(input, min, max);
 
         public static implicit operator int(IntRange range) => range.Rand();
+        public static IntRange operator *(IntRange left, int right) => new(left.Min * right, left.Max * right);
+        public static IntRange operator *(int left, IntRange right) => new(left * right.Min, left * right.Max);
+        public static FloatRange operator *(IntRange left, float right) => new(left.Min * right, left.Max * right);
+        public static FloatRange operator *(float left, IntRange right) => new(left * right.Min, left * right.Max);
     }
 
     /// <summary>
