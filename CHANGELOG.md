@@ -12,7 +12,7 @@
   - `CategoryAttribute` 绘制一个可折叠的分类区，所有属于同一分类的属性将被绘制到一起
   - `SubCategoryAttribute` 绘制一个可折叠的二级分类区，所有属于同一分类的属性将被绘制到一起
 - `LayerAttribute` 让 `int` 属性变成一个层级选择框
-- `CSVParser` 可以简便快速地解析一个带表头的 CSV 文件
+- `CSV` 可以简便快速地解析一个带表头的 CSV 文件
 - `RandomUtils` 提供与随机数有关的快速工具
 - `TransformExtensions` 提供对 `Transform` 的快速操作
 
