@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Bingyan
 {
-    public static class CSVParser
+    public static class CSV
     {
         private static readonly HashSet<string> falseStrs = new()
         {
