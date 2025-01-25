@@ -8,11 +8,9 @@ namespace Bingyan
     {
         [SerializeField] private string scriptName = "ClipMap";
         [SerializeField] private ClipGroup[] groups;
-        public static string ScriptName;
         private Dictionary<string, ClipInfo> infoDict;
         public ClipConfig Init()
         {
-            ScriptName = scriptName;
             infoDict = new();
             foreach (var group in groups)
                 foreach (var info in group.Infos)
