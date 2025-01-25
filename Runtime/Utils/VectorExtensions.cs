@@ -29,7 +29,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="x">新的 x 值</param>
         /// <returns>修改后的向量副本</returns>
-        public static Vector3 SetX(this Vector3 vec, float x)
+        public static Vector3 WithX(this Vector3 vec, float x)
         {
             vec.x = x;
             return vec;
@@ -40,7 +40,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="y">新的 y 值</param>
         /// <returns>修改后的向量副本</returns>
-        public static Vector3 SetY(this Vector3 vec, float y)
+        public static Vector3 WithY(this Vector3 vec, float y)
         {
             vec.y = y;
             return vec;
@@ -51,7 +51,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="z">新的 z 值</param>
         /// <returns>修改后的向量副本</returns>
-        public static Vector3 SetZ(this Vector3 vec, float z)
+        public static Vector3 WithZ(this Vector3 vec, float z)
         {
             vec.z = z;
             return vec;
@@ -105,7 +105,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="x">新的 x 值</param>
         /// <returns>修改后的向量副本</returns>
-        public static Vector2 SetX(this Vector2 vec, float x)
+        public static Vector2 WithX(this Vector2 vec, float x)
         {
             vec.x = x;
             return vec;
@@ -116,7 +116,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="y">新的 y 值</param>
         /// <returns>修改后的向量副本</returns>
-        public static Vector2 SetY(this Vector2 vec, float y)
+        public static Vector2 WithY(this Vector2 vec, float y)
         {
             vec.y = y;
             return vec;
@@ -179,7 +179,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="r">新的 r 值</param>
         /// <returns>修改后的颜色副本</returns>
-        public static Color SetR(this Color color, float r)
+        public static Color WithR(this Color color, float r)
         {
             color.r = r;
             return color;
@@ -190,7 +190,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="g">新的 g 值</param>
         /// <returns>修改后的颜色副本</returns>
-        public static Color SetG(this Color color, float g)
+        public static Color WithG(this Color color, float g)
         {
             color.g = g;
             return color;
@@ -201,7 +201,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="b">新的 b 值</param>
         /// <returns>修改后的颜色副本</returns>
-        public static Color SetB(this Color color, float b)
+        public static Color WithB(this Color color, float b)
         {
             color.b = b;
             return color;
@@ -212,7 +212,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="a">新的 a 值</param>
         /// <returns>修改后的颜色副本</returns>
-        public static Color SetA(this Color color, float a)
+        public static Color WithA(this Color color, float a)
         {
             color.a = a;
             return color;
@@ -223,7 +223,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="length">长度</param>
         /// <returns>新向量</returns>
-        public static Vector2 SetLength(this Vector2 vec, float length)
+        public static Vector2 WithLen(this Vector2 vec, float length)
             => vec.normalized * length;
 
         /// <summary>
@@ -231,8 +231,52 @@ namespace Bingyan
         /// </summary>
         /// <param name="length">限制的最大长度</param>
         /// <returns>限制后的向量</returns>
-        public static Vector2 LimitLength(this Vector2 vec, float length)
+        public static Vector2 LimitLen(this Vector2 vec, float length)
             => Vector2.ClampMagnitude(vec, length);
+
+        /// <summary>
+        /// 保持 x 分量的符号不变，绝对值大小设置为 x<br/>
+        /// 若 x 为负数，则符号取反
+        /// </summary>
+        /// <param name="x">要设置的大小</param>
+        public static Vector2 WithAbsX(this Vector2 vec, float x)
+        {
+            vec.x = Mathf.Sign(vec.x) * x;
+            return vec;
+        }
+
+        /// <summary>
+        /// 保持 x 分量的符号不变，绝对值大小最小设置为 x
+        /// 若 x 为负数则无效
+        /// </summary>
+        /// <param name="x">要设置的大小</param>
+        public static Vector2 WithMinAbsX(this Vector2 vec, float x)
+        {
+            vec.x = Mathf.Abs(vec.x) < x ? x * Mathf.Sign(vec.x) : vec.x;
+            return vec;
+        }
+
+        /// <summary>
+        /// 保持 y 分量的符号不变，绝对值大小设置为 y<br/>
+        /// 若 y 为负数，则符号取反
+        /// </summary>
+        /// <param name="y">要设置的大小</param>
+        public static Vector2 WithAbsY(this Vector2 vec, float y)
+        {
+            vec.y = Mathf.Sign(vec.y) * y;
+            return vec;
+        }
+
+        /// <summary>
+        /// 保持 y 分量的符号不变，绝对值大小最小设置为 y
+        /// 若 y 为负数则无效
+        /// </summary>
+        /// <param name="x">要设置的大小</param>
+        public static Vector2 WithMinAbsY(this Vector2 vec, float y)
+        {
+            vec.y = Mathf.Abs(vec.y) < y ? y * Mathf.Sign(vec.y) : vec.y;
+            return vec;
+        }
 
         /// <summary>
         /// 将向量旋转指定角度, 顺时针为正向

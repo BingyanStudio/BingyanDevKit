@@ -26,11 +26,11 @@ namespace Bingyan
                     switch (rule)
                     {
                         case Rule.Cell:
-                            grid.cellSize = grid.cellSize.SetX((width - grid.padding.left - grid.padding.right - grid.spacing.x * (count - 1)) / count);
+                            grid.cellSize = grid.cellSize.WithX((width - grid.padding.left - grid.padding.right - grid.spacing.x * (count - 1)) / count);
                             break;
 
                         case Rule.Spacing:
-                            grid.spacing = grid.spacing.SetX((width - grid.padding.left - grid.padding.right - grid.cellSize.x * count) / (count - 1));
+                            grid.spacing = grid.spacing.WithX((width - grid.padding.left - grid.padding.right - grid.cellSize.x * count) / (count - 1));
                             break;
                     }
 
@@ -42,11 +42,11 @@ namespace Bingyan
                     switch (rule)
                     {
                         case Rule.Cell:
-                            grid.cellSize = grid.cellSize.SetY((height - grid.padding.top - grid.padding.bottom - grid.spacing.y * (count - 1)) / count);
+                            grid.cellSize = grid.cellSize.WithY((height - grid.padding.top - grid.padding.bottom - grid.spacing.y * (count - 1)) / count);
                             break;
 
                         case Rule.Spacing:
-                            grid.spacing = grid.spacing.SetY((height - grid.padding.top - grid.padding.bottom - grid.cellSize.y * count) / (count - 1));
+                            grid.spacing = grid.spacing.WithY((height - grid.padding.top - grid.padding.bottom - grid.cellSize.y * count) / (count - 1));
                             break;
                     }
 
