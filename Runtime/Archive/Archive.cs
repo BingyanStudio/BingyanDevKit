@@ -124,7 +124,7 @@ namespace Bingyan
         public static Dictionary<string, object> Load(int saveIndex)
         {
             var path = GetSaveFilePath(saveIndex);
-            Debug.Log($"正在加载存档 {saveIndex}\n路径: {path}\n\n");
+            Log.I("Archive", $"正在加载存档 {saveIndex}\n路径: {path}\n\n");
 
             CheckDirectory(saveIndex);
             var reader = new StreamReader(path, Encoding.UTF8);
@@ -149,7 +149,7 @@ namespace Bingyan
                 else dict.Add(item.Key, item.Value);
             }
 
-            Debug.Log($"存档已加载!\n点击查看内容 \n\n{content}\n\n");
+            Log.I("Archive", $"存档已加载!\n点击查看内容 \n\n{content}\n\n");
             return dict;
         }
 
@@ -167,7 +167,7 @@ namespace Bingyan
         public static void Save(int saveIndex, Dictionary<string, object> extras)
         {
             var path = GetSaveFilePath(saveIndex);
-            Debug.Log($"正在保存存档 {saveIndex}\n路径: {path}\n\n");
+            Log.I("Archive", $"正在保存存档 {saveIndex}\n路径: {path}\n\n");
             Saving?.Invoke();
 
             if (extras != null)
@@ -185,14 +185,14 @@ namespace Bingyan
             }
 
             CheckDirectory(saveIndex);
-            StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8);
+            StreamWriter writer = new(path, false, Encoding.UTF8);
             string content = JsonMapper.ToJson(saveDict);
             writer.Write(content);
             writer.Flush();
             writer.Close();
 
             Saved?.Invoke();
-            Debug.Log($"存档已保存! \n点击查看内容 \n{content}\n\n");
+            Log.I("Archive", $"存档已保存! \n内容: \n{content}\n\n");
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace Bingyan
             writer.Flush();
             writer.Close();
 
-            Debug.Log($"存档 {saveIndex} 已清空!");
+            Log.I("Archive", $"存档 {saveIndex} 已清空!");
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace Bingyan
             }
             sb.AppendLine("=========");
             sb.AppendLine();
-            Debug.Log(sb);
+            Log.I("Archive", sb.ToString());
         }
 
         private static void CheckDirectory(int saveIndex)
