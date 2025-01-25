@@ -7,31 +7,36 @@ namespace Bingyan.Editor
     [CustomEditor(typeof(ClipConfig))]
     public class ClipConfigEditorInspector : UnityEditor.Editor
     {
-        public static bool EditInWindow;
-        private static List<bool> show;
+        private static bool[] showing;
+
         public override void OnInspectorGUI()
         {
-            if (EditInWindow) return;
+            if (GUILayout.Button("编辑", GUILayout.Height(30)))
+                ClipConfigEditorWindow.Create();
 
-            if (GUILayout.Button("Edit in Window"))
-            {
-                ClipConfigEditorWindow.Init(serializedObject);
-                EditInWindow = true;
-            }
+            GUILayout.Space(10);
 
-            if (GUILayout.Button("Generate C# Class"))
+            if (GUILayout.Button("生成 C# 代码", GUILayout.Height(30)))
                 ClipConfigEditorWindow.GenerateCode(serializedObject);
 
             var groups = serializedObject.FindProperty("groups");
-            show ??= new();
-            while (show.Count < groups.arraySize) show.Add(true);
-            while (show.Count > groups.arraySize) show.RemoveAt(show.Count - 1);
+
+            if (showing != null)
+            {
+                if (showing.Length < groups.arraySize)
+                {
+                    var t = new bool[groups.arraySize + 4];
+                    showing?.CopyTo(t, 0);
+                    showing = t;
+                }
+            }
+            else showing = new bool[groups.arraySize];
 
             for (int i = 0; i < groups.arraySize; i++)
             {
                 var group = groups.GetArrayElementAtIndex(i);
-                show[i] = EditorGUILayout.Foldout(show[i], group.FindPropertyRelative("Name").stringValue, EditorStyles.foldoutHeader);
-                if (show[i])
+                showing[i] = EditorGUILayout.Foldout(showing[i], group.FindPropertyRelative("Name").stringValue, EditorStyles.foldoutHeader);
+                if (showing[i])
                 {
                     EditorGUI.indentLevel++;
                     var infos = group.FindPropertyRelative("Infos");

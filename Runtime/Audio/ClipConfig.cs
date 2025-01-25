@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Bingyan
 {
-    [CreateAssetMenu(menuName = "ClipConfig")]
+    [CreateAssetMenu(menuName = "DevKit/ClipConfig")]
     public class ClipConfig : ScriptableObject
     {
         [SerializeField] private string scriptName = "ClipMap";
