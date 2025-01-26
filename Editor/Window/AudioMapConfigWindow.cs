@@ -30,6 +30,7 @@ namespace Bingyan.Editor
 
         private Vector2 scrollPos;
 
+        [MenuItem("DevKit/音频配置")]
         public static void Create()
         {
             var window = GetWindow<AudioMapConfigWindow>(gameViewType);
