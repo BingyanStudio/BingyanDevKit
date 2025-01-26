@@ -355,7 +355,7 @@ namespace Bingyan.Editor
                 for (int j = 0; j < infos.arraySize; j++)
                 {
                     string infoName = infos.GetArrayElementAtIndex(j).FindPropertyRelative("Name").stringValue;
-                    code.Append("\n\t\t\tpublic static readonly ClipPlayer ").Append(infoName).Append(" = new(\"").Append(groupName).Append(" ").Append(infoName).Append("\");");
+                    code.Append("\n\t\t\tpublic static readonly ClipPlayer ").Append(infoName).Append(" = new(\"").Append(groupName).Append("/").Append(infoName).Append("\");");
                 }
                 code.Append("\n\t\t}");
             }

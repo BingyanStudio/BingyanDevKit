@@ -21,6 +21,7 @@ namespace Bingyan
         private void Init()
         {
             config = AudioMapConfig.Instance;
+            config.Init();
             states = new();
         }
 
