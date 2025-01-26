@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Bingyan
@@ -28,6 +29,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="r">新的 r 值</param>
         /// <returns>修改后的颜色副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Color WithR(this Color color, float r)
         {
             color.r = r;
@@ -39,6 +41,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="g">新的 g 值</param>
         /// <returns>修改后的颜色副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Color WithG(this Color color, float g)
         {
             color.g = g;
@@ -50,6 +53,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="b">新的 b 值</param>
         /// <returns>修改后的颜色副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Color WithB(this Color color, float b)
         {
             color.b = b;
@@ -61,6 +65,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="a">新的 a 值</param>
         /// <returns>修改后的颜色副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Color WithA(this Color color, float a)
         {
             color.a = a;

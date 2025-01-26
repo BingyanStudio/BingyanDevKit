@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Bingyan
@@ -13,6 +14,7 @@ namespace Bingyan
         /// <param name="left">比较的左侧</param>
         /// <param name="right">比较的右侧</param>
         /// <returns>长度较小的向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 MinLen(Vector2 left, Vector2 right)
             => left.sqrMagnitude > right.sqrMagnitude ? right : left;
 
@@ -22,6 +24,7 @@ namespace Bingyan
         /// <param name="left">比较的左侧</param>
         /// <param name="right">比较的右侧</param>
         /// <returns>长度较大的向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 MaxLen(Vector2 left, Vector2 right)
             => left.sqrMagnitude > right.sqrMagnitude ? left : right;
 
@@ -35,6 +38,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="vec"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Vec2(this Vector3 vec) => vec;
 
         /// <summary>
@@ -43,6 +47,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="vec"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Vec3(this Vector2 vec) => vec;
 
         /// <summary>
@@ -50,6 +55,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="x">新的 x 值</param>
         /// <returns>修改后的向量副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 WithX(this Vector3 vec, float x)
         {
             vec.x = x;
@@ -61,6 +67,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="y">新的 y 值</param>
         /// <returns>修改后的向量副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 WithY(this Vector3 vec, float y)
         {
             vec.y = y;
@@ -72,6 +79,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="z">新的 z 值</param>
         /// <returns>修改后的向量副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 WithZ(this Vector3 vec, float z)
         {
             vec.z = z;
@@ -83,6 +91,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="action">操作</param>
         /// <returns>操作后的向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 ForEach(this Vector3 vec, Func<float, float> action)
         {
             vec.x = action.Invoke(vec.x);
@@ -95,6 +104,7 @@ namespace Bingyan
         /// 将向量的 X 分量翻转
         /// </summary>
         /// <returns>翻转后的新向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 FlipX(this Vector3 vec)
         {
             vec.x = -vec.x;
@@ -105,6 +115,7 @@ namespace Bingyan
         /// 将向量的 Y 分量翻转
         /// </summary>
         /// <returns>翻转后的新向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 FlipY(this Vector3 vec)
         {
             vec.y = -vec.y;
@@ -115,6 +126,7 @@ namespace Bingyan
         /// 将向量的 Z 分量翻转
         /// </summary>
         /// <returns>翻转后的新向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 FlipZ(this Vector3 vec)
         {
             vec.z = -vec.z;
@@ -126,6 +138,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="x">新的 x 值</param>
         /// <returns>修改后的向量副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 WithX(this Vector2 vec, float x)
         {
             vec.x = x;
@@ -137,6 +150,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="y">新的 y 值</param>
         /// <returns>修改后的向量副本</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 WithY(this Vector2 vec, float y)
         {
             vec.y = y;
@@ -147,6 +161,7 @@ namespace Bingyan
         /// 将向量的 X 分量翻转
         /// </summary>
         /// <returns>翻转后的新向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 FlipX(this Vector2 vec)
         {
             vec.x = -vec.x;
@@ -157,6 +172,7 @@ namespace Bingyan
         /// 若输入的数据小于 0 则将向量的 X 分量翻转
         /// </summary>
         /// <returns>翻转后的新向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 FlipX(this Vector2 vec, float dir)
         {
             if (dir < 0) vec.x = -vec.x;
@@ -167,6 +183,7 @@ namespace Bingyan
         /// 将向量的 Y 分量翻转
         /// </summary>
         /// <returns>翻转后的新向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 FlipY(this Vector2 vec)
         {
             vec.y = -vec.y;
@@ -177,6 +194,7 @@ namespace Bingyan
         /// 若输入的数据小于 0 则将向量的 Y 分量翻转
         /// </summary>
         /// <returns>翻转后的新向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 FlipY(this Vector2 vec, float dir)
         {
             if (dir < 0) vec.y = -vec.y;
@@ -188,6 +206,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="action">操作</param>
         /// <returns>操作后的向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 ForEach(this Vector2 vec, Func<float, float> action)
         {
             vec.x = action.Invoke(vec.x);
@@ -200,6 +219,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="length">长度</param>
         /// <returns>新向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 WithLen(this Vector2 vec, float length)
             => vec.normalized * length;
 
@@ -208,6 +228,7 @@ namespace Bingyan
         /// </summary>
         /// <param name="length">限制的最大长度</param>
         /// <returns>限制后的向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 LimitLen(this Vector2 vec, float length)
             => Vector2.ClampMagnitude(vec, length);
 
@@ -216,6 +237,7 @@ namespace Bingyan
         /// 若 x 为负数，则符号取反
         /// </summary>
         /// <param name="x">要设置的大小</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 WithAbsX(this Vector2 vec, float x)
         {
             vec.x = Mathf.Sign(vec.x) * x;
@@ -227,6 +249,7 @@ namespace Bingyan
         /// 若 x 为负数则无效
         /// </summary>
         /// <param name="x">要设置的大小</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 WithMinAbsX(this Vector2 vec, float x)
         {
             vec.x = Mathf.Abs(vec.x) < x ? x * Mathf.Sign(vec.x) : vec.x;
@@ -238,6 +261,7 @@ namespace Bingyan
         /// 若 y 为负数，则符号取反
         /// </summary>
         /// <param name="y">要设置的大小</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 WithAbsY(this Vector2 vec, float y)
         {
             vec.y = Mathf.Sign(vec.y) * y;
@@ -249,6 +273,7 @@ namespace Bingyan
         /// 若 y 为负数则无效
         /// </summary>
         /// <param name="x">要设置的大小</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 WithMinAbsY(this Vector2 vec, float y)
         {
             vec.y = Mathf.Abs(vec.y) < y ? y * Mathf.Sign(vec.y) : vec.y;
@@ -260,30 +285,35 @@ namespace Bingyan
         /// </summary>
         /// <param name="angle">旋转的角度</param>
         /// <returns>旋转后的向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Rotate(this Vector2 vec, float angle)
             => Quaternion.Euler(0, 0, angle) * vec;
 
         /// <summary>
         /// 对二维向量进行点乘
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Dot(this Vector2 vec, Vector2 other)
             => Vector2.Dot(vec, other);
 
         /// <summary>
         /// 对三维向量进行点乘
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Dot(this Vector3 vec, Vector3 other)
             => Vector3.Dot(vec, other);
 
         /// <summary>
         /// 对三维向量进行叉乘
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Cross(this Vector3 vec, Vector3 other)
             => Vector3.Cross(vec, other);
 
         /// <summary>
         /// 对三维向量按元素相乘
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Mul(this Vector3 vec, Vector3 other)
         {
             vec.x *= other.x;
