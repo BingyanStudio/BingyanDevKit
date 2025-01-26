@@ -2,11 +2,11 @@
 
 namespace Bingyan
 {
-    public class ClipPlayer
+    public class AudioPlayer
     {
         internal readonly string Name;
 
-        public ClipPlayer(string name)
+        public AudioPlayer(string name)
         {
             Name = name;
         }
