@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,7 +9,7 @@ using UnityEngine;
 namespace Bingyan.Editor
 {
     [EditorWindowTitle(title = "音频配置")]
-    public class ClipConfigEditorWindow : EditorWindow
+    public class AudioMapConfigWindow : EditorWindow
     {
         private const string PATTERN_NAME = @"^[a-zA-Z]\w+$";
         private const string PATTERN_SAME = @"_\d+$";
@@ -33,7 +32,7 @@ namespace Bingyan.Editor
 
         public static void Create()
         {
-            var window = GetWindow<ClipConfigEditorWindow>(gameViewType);
+            var window = GetWindow<AudioMapConfigWindow>(gameViewType);
             window.GetSO();
         }
 
@@ -56,7 +55,13 @@ namespace Bingyan.Editor
         {
             if (target is null || !target.targetObject)
             {
-                EditorGUILayout.HelpBox("你需要创建一个 ClipConfig 配置!", MessageType.Info);
+                EditorGUILayout.HelpBox("你需要创建一个 AudioMap 配置!", MessageType.Info);
+                if (GUILayout.Button("创建", GUILayout.Height(30)))
+                {
+                    var path = EditorUtility.SaveFilePanelInProject("创建 AudioMap", "AudioMap", "asset", "输入 AudioMap 配置的文件名");
+                    AssetDatabase.CreateAsset(CreateInstance<AudioMapConfig>(), path);
+                    AssetDatabase.Refresh();
+                }
                 return;
             }
 
@@ -69,7 +74,7 @@ namespace Bingyan.Editor
             if (Regex.IsMatch(newScriptName, PATTERN_NAME)) scriptName.stringValue = newScriptName;
             else DialogUtils.Show("无效的名称", "脚本名称应当仅包含字母、数字和下划线！", isErr: false);
 
-            if (GUILayout.Button("生成脚本")) GenerateCode(target);
+            if (GUILayout.Button("生成 C# 代码")) GenerateCode(target);
 
             EditorGUILayout.EndHorizontal();
 
@@ -86,9 +91,13 @@ namespace Bingyan.Editor
             {
                 groupVisibilities = new GroupVisibility[groups.arraySize];
                 for (int i = 0; i < groups.arraySize; i++)
+                {
+                    groupVisibilities[i].Showing = true;
                     groupVisibilities[i].Infos = new bool[groups.GetArrayElementAtIndex(i)
-                                                            .FindPropertyRelative("Infos")
-                                                            .arraySize];
+                                                                            .FindPropertyRelative("Infos")
+                                                                            .arraySize];
+                    Array.Fill(groupVisibilities[i].Infos, true);
+                }
             }
 
             #region Group Header
@@ -150,13 +159,9 @@ namespace Bingyan.Editor
                     else groupName.stringValue = newGroupName;
                 }
 
-                bool add = false;
-                if (GUILayout.Button("+", GUILayout.Width(25)))
-                {
-                    add = true;
-                    groupVisibilities[i].Showing = true;
-                }
-                bool del = GUILayout.Button("删除", GUILayout.Width(100));
+
+                bool del = GUILayout.Button("删除组", GUILayout.Width(100));
+                var groupToBeDel = groupName.stringValue;
 
                 EditorGUILayout.EndHorizontal();
 
@@ -164,19 +169,29 @@ namespace Bingyan.Editor
 
                 #region Info Body
 
+                bool addInfo = false;
                 if (groupVisibilities[i].Showing)
                 {
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.PropertyField(group.FindPropertyRelative("Bus"));
+                    EditorGUILayout.PropertyField(group.FindPropertyRelative("Bus"), new GUIContent("总线"));
+                    GUILayout.Space(10);
+
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("+", GUILayout.Width(25)))
+                    {
+                        addInfo = true;
+                        groupVisibilities[i].Showing = true;
+                    }
+                    EditorGUILayout.EndHorizontal();
+
                     for (int j = 0; j < infos.arraySize; j++)
                     {
                         var info = infos.GetArrayElementAtIndex(j);
                         var infoName = info.FindPropertyRelative("Name");
 
-                        // groupStates[i].Infos[j].Name = infoName.stringValue;
-
                         EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.LabelField("Info" + j.ToString(), GUILayout.Width(150));
+                        // EditorGUILayout.LabelField("Info" + j.ToString(), GUILayout.Width(150));
                         if (renaming && i == clickedGroupIdx && j == clickedInfoIdx)
                         {
                             string newInfoName = EditorGUILayout.DelayedTextField(infoName.stringValue);
@@ -196,6 +211,9 @@ namespace Bingyan.Editor
                             {
                                 renaming = false;
                                 infoName.stringValue = newInfoName;
+
+                                clickedGroupIdx = -1;
+                                clickedInfoIdx = -1;
                             }
                         }
                         else if (GUILayout.Button(infoName.stringValue))
@@ -204,6 +222,7 @@ namespace Bingyan.Editor
                             if (i == clickedGroupIdx && j == clickedInfoIdx)
                             {
                                 if (Time.realtimeSinceStartup - clickedTime < INTERVAL) renaming = true;
+                                else clickedTime = Time.realtimeSinceStartup;
                             }
                             else
                             {
@@ -213,11 +232,12 @@ namespace Bingyan.Editor
                             }
                             curInfo = info;
                         }
-                        if (GUILayout.Button("-", GUILayout.Width(25)))
+
+                        if (GUILayout.Button("-", GUILayout.Width(25))
+                            && DialogUtils.Show("删除音频", $"确定要删除音频 {infoName.stringValue} 吗？", isErr: false))
                         {
                             curInfo = null;
                             infos.DeleteArrayElementAtIndex(j);
-                            // groupVars[i].Info.RemoveAt(j);
                         }
                         EditorGUILayout.EndHorizontal();
                     }
@@ -226,7 +246,7 @@ namespace Bingyan.Editor
                 #endregion
 
                 #region Late Update
-                if (add)
+                if (addInfo)
                 {
                     int idx = 1;
                     var check = true;
@@ -245,6 +265,7 @@ namespace Bingyan.Editor
                     infos.arraySize++;
                     infos.GetArrayElementAtIndex(infos.arraySize - 1).FindPropertyRelative("Name").stringValue = infoName;
 
+                    groupVisibilities[i].Infos ??= new bool[infos.arraySize];
                     if (groupVisibilities[i].Infos.Length < infos.arraySize)
                     {
                         var tmp = new bool[infos.arraySize + 4];
@@ -252,12 +273,14 @@ namespace Bingyan.Editor
                         groupVisibilities[i].Infos = tmp;
                     }
                 }
-                if (del)
+                if (del && DialogUtils.Show("删除音频", $"确定要删除音频组 {groupToBeDel} 吗？", isErr: false))
                 {
                     curInfo = null;
                     groups.DeleteArrayElementAtIndex(i);
                 }
                 #endregion
+
+                if (i < groups.arraySize - 1) EditorGUILayout.Space(20);
             }
             #endregion
 
@@ -274,8 +297,8 @@ namespace Bingyan.Editor
                 GUILayout.Label(curInfo.FindPropertyRelative("Name").stringValue, EditorStyles.boldLabel);
                 EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Clips"));
                 EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Loop"), new GUIContent("循环"));
-                EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Pitch"), new GUIContent("音调"));
-                EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Stereo"), new GUIContent("3D"));
+                EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Pitch"), new GUIContent("音调偏移"));
+                EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Stereo"), new GUIContent("3D效果"));
             }
 
             EditorGUILayout.EndVertical();
@@ -295,11 +318,11 @@ namespace Bingyan.Editor
 
         private bool GetSO()
         {
-            foreach (var item in Selection.assetGUIDs.Union(AssetDatabase.FindAssets("t:ClipConfig")))
+            foreach (var item in Selection.assetGUIDs.Union(AssetDatabase.FindAssets("t:AudioMapConfig")))
             {
                 var path = AssetDatabase.GUIDToAssetPath(item);
                 if (AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path)
-                                is ClipConfig clip)
+                                is AudioMapConfig clip)
                 {
                     target = new SerializedObject(clip);
                     currentPath = path;
@@ -314,10 +337,13 @@ namespace Bingyan.Editor
         public async static void GenerateCode(SerializedObject so)
         {
             #region Code Generate
-            string scriptName = so.FindProperty("scriptName").stringValue;
-            string codePath = "Assets/Resources/Audio/" + scriptName + ".cs";
+
+            var scriptName = so.FindProperty("scriptName").stringValue;
+
+            var path = AssetDatabase.GetAssetPath(so.targetObject);
+            var codePath = $"{path[..(path.LastIndexOf('/') + 1)]}{scriptName}.Generated.cs";
+
             StringBuilder code = new();
-            scriptName = so.FindProperty("scriptName").stringValue;
             code.Append("namespace Bingyan\n{\n\tpublic static class ").Append(scriptName).Append("\n\t{");
             var groups = so.FindProperty("groups");
             for (int i = 0; i < groups.arraySize; i++)
@@ -336,15 +362,6 @@ namespace Bingyan.Editor
             code.Append("\n\t}\n}");
             await File.WriteAllTextAsync(codePath, code.ToString());
             AssetDatabase.ImportAsset(codePath);
-            #endregion
-            #region Move Asset
-            string srcPath = AssetDatabase.GetAssetPath(so.targetObject);
-            string assetPath = "Assets/Config/Audio/" + scriptName + ".asset";
-            if (srcPath != assetPath)
-            {
-                AssetDatabase.MoveAsset(srcPath, assetPath);
-                so.targetObject.name = scriptName;
-            }
             #endregion
         }
     }

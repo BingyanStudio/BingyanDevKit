@@ -5,7 +5,7 @@ using UnityEngine.Audio;
 namespace Bingyan
 {
     [Serializable]
-    public class ClipInfo
+    internal class ClipInfo
     {
         public string Name;
         public AudioClip[] Clips;

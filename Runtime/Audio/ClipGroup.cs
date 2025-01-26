@@ -4,7 +4,7 @@ using UnityEngine.Audio;
 namespace Bingyan
 {
     [Serializable]
-    public class ClipGroup
+    internal class ClipGroup
     {
         public string Name;
         public AudioMixerGroup Bus;

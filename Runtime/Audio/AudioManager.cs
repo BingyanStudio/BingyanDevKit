@@ -3,100 +3,111 @@ using UnityEngine;
 
 namespace Bingyan
 {
-    public class AudioManager : MonoBehaviour
+    internal class AudioManager : MonoBehaviour
     {
-        public static AudioManager Instance { get; private set; }
+        internal static AudioManager Instance { get; private set; }
+
         static AudioManager()
         {
             Instance = new GameObject().AddComponent<AudioManager>();
             DontDestroyOnLoad(Instance.gameObject);
 
-            Instance.Config = Resources.Load<ClipConfig>("Audio/ClipMap").Init();
-            Instance.infos = new();
+            Instance.Init();
         }
 
-        public ClipConfig Config;
-        private class SourceInfo
+        private AudioMapConfig config;
+        private List<SourceState> states;
+
+        private void Init()
         {
-            public string Name;
-            public GameObject Target;
-            public AudioSource Source;
-            public float TimeSamples;
-            public ClipInfo Clip;
+            config = AudioMapConfig.Instance;
+            states = new();
         }
-        private List<SourceInfo> infos;
+
         /// <summary>
         /// 播放<paramref name="player"/>，且保证只有一个AudioSource播放它
         /// </summary>
-        public AudioSource PlaySingle(ClipPlayer player) => Play(player, gameObject, true);
+        internal AudioSource PlaySingleton(ClipPlayer player) => Play(player, gameObject, true);
+
         /// <summary>
         /// 跟踪<paramref name="target"/>播放<paramref name="player"/>，且保证只有一个AudioSource播放它
         /// </summary>
-        public AudioSource PlaySingle(ClipPlayer player, GameObject target) => Play(player, target, true);
+        internal AudioSource PlaySingleton(ClipPlayer player, GameObject target) => Play(player, target, true);
+
         /// <summary>
         /// 播放<paramref name="player"/>
         /// </summary>
-        public AudioSource Play(ClipPlayer player) => Play(player, gameObject, false);
+        internal AudioSource Play(ClipPlayer player) => Play(player, gameObject, false);
+
         /// <summary>
         /// 跟踪<paramref name="target"/>播放<paramref name="player"/>
         /// </summary>
-        public AudioSource Play(ClipPlayer player, GameObject target) => Play(player, target, false);
-        private AudioSource Play(ClipPlayer player, GameObject target, bool single)
+        internal AudioSource Play(ClipPlayer player, GameObject target) => Play(player, target, false);
+
+        private AudioSource Play(ClipPlayer player, GameObject target, bool singleton)
         {
-            SourceInfo curInfo = null;
-            foreach (var info in infos)
+            SourceState state = null;
+
+            foreach (var item in states)
             {
-                if (single && info.Name == player.Name && info.Source.isPlaying)
+                if (singleton && item.Name == player.Name && item.Source.isPlaying)
                 {
-                    info.Target = target;
-                    return info.Source;
+                    item.Target = target;
+                    return item.Source;
                 }
-                if (!info.Source.isPlaying)
+                if (!item.Source.isPlaying)
                 {
-                    curInfo = info;
-                    if (!single) break;
+                    state = item;
+                    if (!singleton) break;
                 }
             }
-            if (curInfo == null)
+
+            if (state == null)
             {
-                curInfo = new SourceInfo();
-                curInfo.Source = new GameObject().AddComponent<AudioSource>();
-                curInfo.Source.transform.parent = transform;
-                infos.Add(curInfo);
+                state = new SourceState
+                {
+                    Source = new GameObject().AddComponent<AudioSource>()
+                };
+                state.Source.transform.parent = transform;
+                states.Add(state);
             }
-            curInfo.Name = player.Name;
-            curInfo.Target = target;
-            curInfo.Source.clip = player.Info.Clips.Length > 0 ? player.Info.Clips[UnityEngine.Random.Range(0, player.Info.Clips.Length)] : null;
-            curInfo.Source.loop = player.Info.Loop;
-            curInfo.Source.pitch = 1 + player.Info.Pitch;
-            curInfo.Source.outputAudioMixerGroup = player.Info.Bus;
-            curInfo.Source.spatialBlend = player.Info.Stereo;
-            curInfo.TimeSamples = 0;
-            curInfo.Clip = player.Info;
-            curInfo.Source.Play();
-            return curInfo.Source;
+            state.Name = player.Name;
+            state.Target = target;
+
+            var info = config[player.Name];
+
+            state.Source.clip = info.Clips.Length > 0 ? info.Clips[Random.Range(0, info.Clips.Length)] : null;
+            state.Source.loop = info.Loop;
+            state.Source.pitch = 1 + info.Pitch;
+            state.Source.outputAudioMixerGroup = info.Bus;
+            state.Source.spatialBlend = info.Stereo;
+            state.TimeSamples = 0;
+            state.Clip = info;
+            state.Source.Play();
+            return state.Source;
         }
+
         /// <summary>
         /// 停止播放<paramref name="player"/>
         /// </summary>
-        public void Stop(ClipPlayer player)
+        internal void Stop(ClipPlayer player)
         {
-            foreach (var info in infos)
+            foreach (var info in states)
                 if (info.Target == gameObject && info.Name == player.Name)
                     info.Source.Stop();
         }
         /// <summary>
         /// 停止播放正在跟踪<paramref name="target"/>的<paramref name="player"/>
         /// </summary>
-        public void Stop(ClipPlayer player, GameObject target)
+        internal void Stop(ClipPlayer player, GameObject target)
         {
-            foreach (var info in infos)
+            foreach (var info in states)
                 if (info.Target == target && info.Name == player.Name)
                     info.Source.Stop();
         }
         private void FixedUpdate()
         {
-            foreach (var info in infos)
+            foreach (var info in states)
                 if (info.Target != null && info.Source.isPlaying)
                 {
                     if (info.Source.timeSamples < info.TimeSamples)
@@ -104,6 +115,15 @@ namespace Bingyan
                     info.TimeSamples = info.Source.timeSamples;
                     info.Source.transform.position = info.Target.transform.position;
                 }
+        }
+
+        private class SourceState
+        {
+            internal string Name;
+            internal GameObject Target;
+            internal AudioSource Source;
+            internal float TimeSamples;
+            internal ClipInfo Clip;
         }
     }
 }
