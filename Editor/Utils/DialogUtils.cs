@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Bingyan
+namespace Bingyan.Editor
 {
     public static class DialogUtils
     {
@@ -15,13 +15,10 @@ namespace Bingyan
         /// <param name="yesBtn">确认按钮的文字</param>
         /// <param name="cancelBtn">取消按钮的文字</param>
         /// <param name="isErr">是否是报错的信息，如果是，则会同时在控制台打印信息，以方便栈追踪</param>
-        public static bool Show(string title, string content, string yesBtn = "确定", string cancelBtn = "取消", bool isErr = true)
+        public static bool Show(string title, string content, string yesBtn = "确定", string cancelBtn = "取消", bool isErr = false)
         {
-#if UNITY_EDITOR
             if (isErr) Debug.LogError(content);
             return EditorUtility.DisplayDialog(title, content, yesBtn, cancelBtn);
-#endif
-            return false;
         }
     }
 }

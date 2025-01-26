@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Bingyan
 {
+    #pragma warning disable CS0414
     [CreateAssetMenu(menuName = "DevKit/AudioMap")]
     public class AudioMapConfig : ScriptableConfig<AudioMapConfig>
     {
