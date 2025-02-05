@@ -27,8 +27,8 @@ namespace Bingyan
         public virtual void OnColliderExit2D(Collision2D col) { }
         public virtual void OnExit() { }
 
-        public virtual void DrawGizmos() { }
-        public virtual void DrawGizmosSelected() { }
+        public virtual void OnDrawGizmos() { }
+        public virtual void OnDrawGizmosSelected() { }
 
         public static implicit operator bool(FSMState self) => self != null;
     }

@@ -86,22 +86,17 @@ namespace Bingyan
 
         protected virtual void OnDrawGizmos()
         {
-            CurrentState?.DrawGizmos();
+            CurrentState?.OnDrawGizmos();
         }
 
         protected virtual void OnDrawGizmosSelected()
         {
-            CurrentState?.DrawGizmosSelected();
+            CurrentState?.OnDrawGizmosSelected();
         }
 
         public override void Process(float delta)
         {
-            if (pendingState != CurrentState)
-            {
-                CurrentState?.OnExit();
-                CurrentState = pendingState;
-                CurrentState?.OnEnter();
-            }
+            CheckStateChange();
 
             if (!CurrentState) return;
 
@@ -144,6 +139,16 @@ namespace Bingyan
                 var sb = new StringBuilder($"{name} 状态机内并不包含状态 {state}\n当前包含的状态有: ");
                 foreach (var item in states.Keys) sb.AppendLine(item.ToString());
                 Debug.LogWarning(sb.ToString());
+            }
+        }
+
+        private void CheckStateChange()
+        {
+            if (pendingState != CurrentState)
+            {
+                CurrentState?.OnExit();
+                CurrentState = pendingState;
+                CurrentState?.OnEnter();
             }
         }
     }
