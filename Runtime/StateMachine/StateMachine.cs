@@ -19,6 +19,7 @@ namespace Bingyan
 
         protected Dictionary<Type, FSMState> states = new();
         public FSMState CurrentState { get; private set; }
+        private FSMState pendingState;
 
         protected virtual void Awake()
         {
@@ -95,6 +96,13 @@ namespace Bingyan
 
         public override void Process(float delta)
         {
+            if (pendingState != CurrentState)
+            {
+                CurrentState?.OnExit();
+                CurrentState = pendingState;
+                CurrentState?.OnEnter();
+            }
+
             if (!CurrentState) return;
 
             delta *= timeScale;
@@ -129,16 +137,10 @@ namespace Bingyan
 
         public void ChangeState(Type state)
         {
-            CurrentState?.OnExit();
-            if (states.TryGetValue(state, out var value))
-            {
-                CurrentState = value;
-                CurrentState.OnEnter();
-            }
+            if (states.TryGetValue(state, out var value)) pendingState = value;
             else
             {
-                CurrentState = null;
-
+                pendingState = CurrentState;
                 var sb = new StringBuilder($"{name} 状态机内并不包含状态 {state}\n当前包含的状态有: ");
                 foreach (var item in states.Keys) sb.AppendLine(item.ToString());
                 Debug.LogWarning(sb.ToString());
