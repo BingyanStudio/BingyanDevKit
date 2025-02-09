@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -17,13 +18,20 @@ namespace Bingyan.Editor
             GUILayout.Space(10);
 
 
-            var scriptName = serializedObject.FindProperty("scriptName");
-            string newScriptName = EditorGUILayout.DelayedTextField("脚本名称", scriptName.stringValue);
+            var scPath = serializedObject.FindProperty("scriptPath");
+            GUI.enabled = false;
+            EditorGUILayout.TextField("生成脚本", scPath.stringValue);
+            GUI.enabled = true;
 
-            if (Regex.IsMatch(newScriptName, @"^[a-zA-Z]\w+$")) scriptName.stringValue = newScriptName;
-            else DialogUtils.Show("无效的名称", "脚本名称应当仅包含字母、数字和下划线！", isErr: false);
+            EditorGUILayout.BeginHorizontal(GUILayout.Height(24));
+            if (GUILayout.Button("选择路径", GUILayout.Height(24)))
+            {
+                var path = EditorUtility.SaveFilePanelInProject("选择代码生成路径", "AudioMap.Generated", "cs", "请选择生成代码的路径");
+                if (path.Length > 0) scPath.stringValue = path;
+            }
+            if (GUILayout.Button("生成", GUILayout.Height(24))) AudioMapConfigWindow.GenerateCode(serializedObject);
+            EditorGUILayout.EndHorizontal();
 
-            if (GUILayout.Button("生成 C# 代码", GUILayout.Height(24))) AudioMapConfigWindow.GenerateCode(serializedObject);
 
             var groups = serializedObject.FindProperty("groups");
 
