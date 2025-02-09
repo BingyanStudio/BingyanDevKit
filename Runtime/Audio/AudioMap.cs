@@ -9,7 +9,7 @@ namespace Bingyan
     [CreateAssetMenu(menuName = "DevKit/AudioMap")]
     public class AudioMapConfig : ScriptableConfig<AudioMapConfig>
     {
-        [SerializeField] private string scriptName = "AudioMap";
+        [SerializeField] private string scriptPath = "Assets/AudioMap.Generated.cs";
         [SerializeField] private ClipGroup[] groups;
 
         private Dictionary<string, ClipInfo> infoDict;

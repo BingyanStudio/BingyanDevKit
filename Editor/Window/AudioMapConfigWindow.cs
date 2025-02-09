@@ -70,12 +70,16 @@ namespace Bingyan.Editor
 
             EditorGUILayout.BeginHorizontal();
 
-            var scriptName = target.FindProperty("scriptName");
-            string newScriptName = EditorGUILayout.DelayedTextField("脚本名称", scriptName.stringValue);
-            if (Regex.IsMatch(newScriptName, PATTERN_NAME)) scriptName.stringValue = newScriptName;
-            else DialogUtils.Show("无效的名称", "脚本名称应当仅包含字母、数字和下划线！", isErr: false);
-
-            if (GUILayout.Button("生成 C# 代码")) GenerateCode(target);
+            GUI.enabled = false;
+            var scPath = target.FindProperty("scriptPath");
+            EditorGUILayout.TextField("生成脚本", scPath.stringValue);
+            GUI.enabled = true;
+            if (GUILayout.Button("选择路径", GUILayout.Width(80)))
+            {
+                var path = EditorUtility.SaveFilePanelInProject("选择代码生成路径", "AudioMap.Generated", "cs", "请选择生成代码的路径");
+                if (path.Length > 0) scPath.stringValue = path;
+            }
+            if (GUILayout.Button("生成", GUILayout.Width(80))) GenerateCode(target);
 
             EditorGUILayout.EndHorizontal();
 
@@ -339,30 +343,28 @@ namespace Bingyan.Editor
         {
             #region Code Generate
 
-            var scriptName = so.FindProperty("scriptName").stringValue;
-
-            var path = AssetDatabase.GetAssetPath(so.targetObject);
-            var codePath = $"{path[..(path.LastIndexOf('/') + 1)]}{scriptName}.Generated.cs";
+            var scriptPath = so.FindProperty("scriptPath").stringValue;
+            var className = Path.GetFileNameWithoutExtension(scriptPath).Split('.')[0];
 
             StringBuilder code = new();
-            code.Append("namespace Bingyan\n{\n\tpublic static class ").Append(scriptName).Append("\n\t{");
+            code.Append("public static class ").Append(className).Append("\n{");
             var groups = so.FindProperty("groups");
             for (int i = 0; i < groups.arraySize; i++)
             {
                 var group = groups.GetArrayElementAtIndex(i);
                 string groupName = group.FindPropertyRelative("Name").stringValue;
-                code.Append("\n\t\tpublic static class ").Append(groupName).Append("\n\t\t{");
+                code.Append("\n\tpublic static class ").Append(groupName).Append("\n\t{");
                 var infos = group.FindPropertyRelative("Infos");
                 for (int j = 0; j < infos.arraySize; j++)
                 {
                     string infoName = infos.GetArrayElementAtIndex(j).FindPropertyRelative("Name").stringValue;
-                    code.Append("\n\t\t\tpublic static readonly AudioPlayer ").Append(infoName).Append(" = new(\"").Append(groupName).Append("/").Append(infoName).Append("\");");
+                    code.Append("\n\t\tpublic static readonly AudioPlayer ").Append(infoName).Append(" = new(\"").Append(groupName).Append("/").Append(infoName).Append("\");");
                 }
-                code.Append("\n\t\t}");
+                code.Append("\n\t}");
             }
-            code.Append("\n\t}\n}");
-            await File.WriteAllTextAsync(codePath, code.ToString());
-            AssetDatabase.ImportAsset(codePath);
+            code.Append("\n}");
+            await File.WriteAllTextAsync(scriptPath, code.ToString());
+            AssetDatabase.ImportAsset(scriptPath);
             #endregion
         }
     }
