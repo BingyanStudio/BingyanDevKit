@@ -206,12 +206,12 @@ namespace Bingyan.Editor
                                     else if (infos.GetArrayElementAtIndex(k).FindPropertyRelative("Name").stringValue == newInfoName)
                                         match = true;
                                 if (match) DialogUtils.Show("重复的名称", "名称出现重复，请检查！", isErr: false);
+                                else infoName.stringValue = newInfoName;
                             }
 
-                            if (GUILayout.Button("Commit", GUILayout.Width(100)))
+                            if (GUILayout.Button("确认", GUILayout.Width(100)))
                             {
                                 renaming = false;
-                                infoName.stringValue = newInfoName;
 
                                 clickedGroupIdx = -1;
                                 clickedInfoIdx = -1;
