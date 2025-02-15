@@ -10,7 +10,7 @@ namespace Bingyan
  /// </summary>
     public class Flow
     {
-        private static Stack<Flow> pool = new();
+        private static readonly Stack<Flow> pool = new();
 
         private readonly Handle handle;
         private readonly List<Action<Handle>> actions = new();
@@ -142,7 +142,7 @@ namespace Bingyan
         private void _Except(Exception e)
         {
             if (exceptAction != null) exceptAction.Invoke(e);
-            else Debug.LogError(e);
+            else throw e;
             Release();
         }
 
