@@ -1,8 +1,8 @@
-using System.Linq;
-using System.Collections.Generic;
 using System;
-using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Bingyan
 {
@@ -24,6 +24,11 @@ namespace Bingyan
         protected virtual void Awake()
         {
             if (automatic) Init();
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (CurrentState) CurrentState.OnExit();
         }
 
         public virtual void Init()

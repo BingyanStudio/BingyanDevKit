@@ -70,16 +70,19 @@ namespace Bingyan.Editor
 
             EditorGUILayout.BeginHorizontal();
 
-            GUI.enabled = false;
             var scPath = target.FindProperty("scriptPath");
-            EditorGUILayout.TextField("生成脚本", scPath.stringValue);
+            EditorGUILayout.LabelField("生成脚本", GUILayout.Width(60));
+            
+            GUI.enabled = false;
+            EditorGUILayout.TextField(scPath.stringValue);
             GUI.enabled = true;
+
             if (GUILayout.Button("选择路径", GUILayout.Width(80)))
             {
                 var path = EditorUtility.SaveFilePanelInProject("选择代码生成路径", "AudioMap.Generated", "cs", "请选择生成代码的路径");
                 if (path.Length > 0) scPath.stringValue = path;
             }
-            if (GUILayout.Button("生成", GUILayout.Width(80))) GenerateCode(target);
+            if (GUILayout.Button("生成", GUILayout.Width(80))) AudioMapUtils.GenerateCode(target);
 
             EditorGUILayout.EndHorizontal();
 
@@ -323,49 +326,12 @@ namespace Bingyan.Editor
 
         private bool GetSO()
         {
-            foreach (var item in Selection.assetGUIDs.Union(AssetDatabase.FindAssets("t:AudioMapConfig")))
+            if (AudioMapUtils.TryGetSO(out target, out currentPath))
             {
-                var path = AssetDatabase.GUIDToAssetPath(item);
-                if (AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path)
-                                is AudioMapConfig clip)
-                {
-                    target = new SerializedObject(clip);
-                    currentPath = path;
-                    Repaint();
-                    return true;
-                }
+                Repaint();
+                return true;
             }
-            target = null;
             return false;
-        }
-
-        public async static void GenerateCode(SerializedObject so)
-        {
-            #region Code Generate
-
-            var scriptPath = so.FindProperty("scriptPath").stringValue;
-            var className = Path.GetFileNameWithoutExtension(scriptPath).Split('.')[0];
-
-            StringBuilder code = new();
-            code.Append("public static class ").Append(className).Append("\n{");
-            var groups = so.FindProperty("groups");
-            for (int i = 0; i < groups.arraySize; i++)
-            {
-                var group = groups.GetArrayElementAtIndex(i);
-                string groupName = group.FindPropertyRelative("Name").stringValue;
-                code.Append("\n\tpublic static class ").Append(groupName).Append("\n\t{");
-                var infos = group.FindPropertyRelative("Infos");
-                for (int j = 0; j < infos.arraySize; j++)
-                {
-                    string infoName = infos.GetArrayElementAtIndex(j).FindPropertyRelative("Name").stringValue;
-                    code.Append("\n\t\tpublic static readonly AudioPlayer ").Append(infoName).Append(" = new(\"").Append(groupName).Append("/").Append(infoName).Append("\");");
-                }
-                code.Append("\n\t}");
-            }
-            code.Append("\n}");
-            await File.WriteAllTextAsync(scriptPath, code.ToString());
-            AssetDatabase.ImportAsset(scriptPath);
-            #endregion
         }
     }
 }

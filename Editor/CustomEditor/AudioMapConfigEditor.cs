@@ -29,7 +29,7 @@ namespace Bingyan.Editor
                 var path = EditorUtility.SaveFilePanelInProject("选择代码生成路径", "AudioMap.Generated", "cs", "请选择生成代码的路径");
                 if (path.Length > 0) scPath.stringValue = path;
             }
-            if (GUILayout.Button("生成", GUILayout.Height(24))) AudioMapConfigWindow.GenerateCode(serializedObject);
+            if (GUILayout.Button("生成", GUILayout.Height(24))) AudioMapUtils.GenerateCode(serializedObject);
             EditorGUILayout.EndHorizontal();
 
 

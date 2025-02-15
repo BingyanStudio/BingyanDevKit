@@ -28,24 +28,24 @@ namespace Bingyan
         /// <summary>
         /// 播放<paramref name="player"/>，且保证只有一个AudioSource播放它
         /// </summary>
-        internal AudioSource PlaySingleton(AudioPlayer player) => Play(player, gameObject, true);
+        internal AudioSource PlaySingleton(AudioRef player) => Play(player, gameObject, true);
 
         /// <summary>
         /// 跟踪<paramref name="target"/>播放<paramref name="player"/>，且保证只有一个AudioSource播放它
         /// </summary>
-        internal AudioSource PlaySingleton(AudioPlayer player, GameObject target) => Play(player, target, true);
+        internal AudioSource PlaySingleton(AudioRef player, GameObject target) => Play(player, target, true);
 
         /// <summary>
         /// 播放<paramref name="player"/>
         /// </summary>
-        internal AudioSource Play(AudioPlayer player) => Play(player, gameObject, false);
+        internal AudioSource Play(AudioRef player) => Play(player, gameObject, false);
 
         /// <summary>
         /// 跟踪<paramref name="target"/>播放<paramref name="player"/>
         /// </summary>
-        internal AudioSource Play(AudioPlayer player, GameObject target) => Play(player, target, false);
+        internal AudioSource Play(AudioRef player, GameObject target) => Play(player, target, false);
 
-        private AudioSource Play(AudioPlayer player, GameObject target, bool singleton)
+        private AudioSource Play(AudioRef player, GameObject target, bool singleton)
         {
             SourceState state = null;
 
@@ -91,7 +91,7 @@ namespace Bingyan
         /// <summary>
         /// 停止播放<paramref name="player"/>
         /// </summary>
-        internal void Stop(AudioPlayer player)
+        internal void Stop(AudioRef player)
         {
             foreach (var info in states)
                 if (info.Target == gameObject && info.Name == player.Name)
@@ -100,7 +100,7 @@ namespace Bingyan
         /// <summary>
         /// 停止播放正在跟踪<paramref name="target"/>的<paramref name="player"/>
         /// </summary>
-        internal void Stop(AudioPlayer player, GameObject target)
+        internal void Stop(AudioRef player, GameObject target)
         {
             foreach (var info in states)
                 if (info.Target == target && info.Name == player.Name)

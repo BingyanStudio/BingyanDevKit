@@ -1,6 +1,6 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Audio;
 
 namespace Bingyan
@@ -21,7 +21,7 @@ namespace Bingyan
                 foreach (var info in group.Infos)
                 {
                     info.Bus = group.Bus;
-                    infoDict.Add(group.Name + '/' + info.Name, info);
+                    infoDict.Add($"{group.Name}/{info.Name}", info);
                 }
             return this;
         }

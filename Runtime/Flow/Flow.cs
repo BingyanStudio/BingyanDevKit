@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Bingyan
 {/// <summary>
@@ -104,12 +105,14 @@ namespace Bingyan
         /// <summary>
         /// 开始执行整个流程
         /// </summary>
+        [HideInCallstack]
         public void Run()
         {
             idx = 0;
             Exec();
         }
 
+        [HideInCallstack]
         private void Exec()
         {
             if (idx >= actions.Count)
@@ -128,18 +131,22 @@ namespace Bingyan
             }
         }
 
+        [HideInCallstack]
         private void Continue()
         {
             idx++;
             Exec();
         }
 
+        [HideInCallstack]
         private void _Except(Exception e)
         {
-            exceptAction?.Invoke(e);
+            if (exceptAction != null) exceptAction.Invoke(e);
+            else Debug.LogError(e);
             Release();
         }
 
+        [HideInCallstack]
         private void Release()
         {
             actions.Clear();
