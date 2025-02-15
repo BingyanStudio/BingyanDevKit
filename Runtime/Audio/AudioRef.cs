@@ -1,12 +1,14 @@
+using System;
 using UnityEngine;
 
 namespace Bingyan
 {
-    public class AudioPlayer
+    [Serializable]
+    public struct AudioRef
     {
-        internal readonly string Name;
+        [SerializeField] internal string Name;
 
-        public AudioPlayer(string name)
+        public AudioRef(string name)
         {
             Name = name;
         }
@@ -14,32 +16,32 @@ namespace Bingyan
         /// <summary>
         /// 停止播放<see cref="Info"/>
         /// </summary>
-        public void Stop() => AudioManager.Instance.Stop(this);
+        public readonly void Stop() => AudioManager.Instance.Stop(this);
 
         /// <summary>
         /// 使用<see cref="AudioManager"/>播放<see cref="Info"/>
         /// </summary>
-        public AudioSource Play() => AudioManager.Instance.Play(this);
+        public readonly AudioSource Play() => AudioManager.Instance.Play(this);
 
         /// <summary>
         /// 使用<see cref="AudioManager"/>播放<see cref="Info"/>，且保证只有一个AudioSource播放它
         /// </summary>
-        public AudioSource PlaySingleton() => AudioManager.Instance.PlaySingleton(this);
+        public readonly AudioSource PlaySingleton() => AudioManager.Instance.PlaySingleton(this);
 
         /// <summary>
         /// 停止播放正在追踪<paramref name="target"/>的<see cref="Info"/>
         /// </summary>
-        public void Stop(GameObject target) => AudioManager.Instance.Stop(this, target);
+        public readonly void Stop(GameObject target) => AudioManager.Instance.Stop(this, target);
 
         /// <summary>
         /// 使用<see cref="AudioManager"/>播放<see cref="Info"/>，跟踪<paramref name="target"/>
         /// </summary>
-        public AudioSource Play(GameObject target) => AudioManager.Instance.Play(this, target);
+        public readonly AudioSource Play(GameObject target) => AudioManager.Instance.Play(this, target);
 
         /// <summary>
         /// 使用<see cref="AudioManager"/>播放<see cref="Info"/>，跟踪<paramref name="target"/>，且保证只有一个AudioSource播放它
         /// </summary>
-        public AudioSource PlaySingleton(GameObject target) => AudioManager.Instance.PlaySingleton(this, target);
+        public readonly AudioSource PlaySingleton(GameObject target) => AudioManager.Instance.PlaySingleton(this, target);
     }
 
 }
