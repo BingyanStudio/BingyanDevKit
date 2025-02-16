@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Bingyan
 {
     public interface IProcesser<T> where T : IProcessable

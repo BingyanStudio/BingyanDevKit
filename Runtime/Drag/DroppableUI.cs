@@ -9,7 +9,7 @@ namespace Bingyan
     /// </summary>
     public abstract class DroppableUI : MonoBehaviour
     {
-        private static List<DroppableUI> droppables = new();
+        private static readonly List<DroppableUI> droppables = new();
         public static List<DroppableUI> GetDroppables() => droppables;
         public static List<GameObject> GetDroppableObjs() => droppables.Select(i => i.gameObject).ToList();
 
