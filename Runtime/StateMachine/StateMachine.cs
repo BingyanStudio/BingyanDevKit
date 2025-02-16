@@ -1,29 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 
 namespace Bingyan
 {
-    /// <summary>
-    /// Mono 有限状态机<br/>
-    /// 要指定初始状态，只需要在 Start 或 Awake 中调用 <see cref="ChangeState"/>
-    /// </summary>
-    public abstract class FSM : ProcessableMono
+    public abstract class FSMBase : MonoBehaviour
     {
-        [SerializeField, Title("使用 Unity Update")] protected bool automatic = true;
         [SerializeField, Title("时间尺度")] private float timeScale = 1;
-
         public float TimeScale { get => timeScale; set => timeScale = value; }
 
         protected Dictionary<Type, FSMState> states = new();
         public FSMState CurrentState { get; private set; }
         private FSMState pendingState;
 
-        protected virtual void Awake()
+        public virtual void Init()
         {
-            if (automatic) Init();
+            DefineStates();
+            ChangeState(GetDefaultState());
         }
 
         protected virtual void OnDestroy()
@@ -31,10 +25,22 @@ namespace Bingyan
             if (CurrentState) CurrentState.OnExit();
         }
 
-        public virtual void Init()
+        public virtual void Process(float delta)
         {
-            DefineStates();
-            ChangeState(GetDefaultState());
+            CheckStateChange();
+
+            if (!CurrentState) return;
+
+            delta *= TimeScale;
+            CurrentState.OnUpdate(delta);
+        }
+
+        public virtual void PhysicsProcess(float delta)
+        {
+            if (!CurrentState) return;
+
+            delta *= TimeScale;
+            CurrentState.OnFixedUpdate(delta);
         }
 
         /// <summary>
@@ -48,16 +54,6 @@ namespace Bingyan
         /// </summary>
         /// <returns>初始状态类型</returns>
         protected abstract Type GetDefaultState();
-
-        protected virtual void Update()
-        {
-            if (automatic) Process(Time.deltaTime);
-        }
-
-        protected virtual void FixedUpdate()
-        {
-            if (automatic) PhysicsProcess(Time.fixedDeltaTime);
-        }
 
         protected virtual void OnTriggerEnter2D(Collider2D other)
         {
@@ -99,24 +95,6 @@ namespace Bingyan
             CurrentState?.OnDrawGizmosSelected();
         }
 
-        public override void Process(float delta)
-        {
-            CheckStateChange();
-
-            if (!CurrentState) return;
-
-            delta *= timeScale;
-            CurrentState.OnUpdate(delta);
-        }
-
-        public override void PhysicsProcess(float delta)
-        {
-            if (!CurrentState) return;
-
-            delta *= timeScale;
-            CurrentState.OnFixedUpdate(delta);
-        }
-
         /// <summary>
         /// 添加状态<br/>
         /// </summary>
@@ -155,6 +133,34 @@ namespace Bingyan
                 CurrentState = pendingState;
                 CurrentState?.OnEnter();
             }
+        }
+    }
+
+    /// <summary>
+    /// 有限状态机的 Processable 实现<br/>
+    /// 要指定初始状态，只需要在 Start 或 Awake 中调用 <see cref="ChangeState"/>
+    /// </summary>
+    public abstract class ProcessableFSM : FSMBase, IProcessable { }
+
+    /// <summary>
+    /// 有限状态机<br/>
+    /// 要指定初始状态，只需要在 Start 或 Awake 中调用 <see cref="ChangeState"/>
+    /// </summary>
+    public abstract class FSM : FSMBase
+    {
+        protected virtual void Awake()
+        {
+            Init();
+        }
+
+        protected virtual void Update()
+        {
+            Process(Time.deltaTime);
+        }
+
+        protected virtual void FixedUpdate()
+        {
+            PhysicsProcess(Time.fixedDeltaTime);
         }
     }
 }
