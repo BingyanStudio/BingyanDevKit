@@ -17,7 +17,7 @@ namespace Bingyan.Editor
             }
 
             var val = property.FindPropertyRelative("Name").stringValue;
-            var groups = new List<string>();
+            var groups = new List<string>() { "无" };
 
             var propGroups = map.FindProperty("groups");
             for (int i = 0; i < propGroups.arraySize; i++)
@@ -47,7 +47,7 @@ namespace Bingyan.Editor
                     Log.W("AudioRef", $"ID 为 {val} 的音频未找到!");
             }
             idx = EditorGUI.Popup(position, label.text, idx, groups.ToArray());
-            property.FindPropertyRelative("Name").stringValue = groups[idx];
+            property.FindPropertyRelative("Name").stringValue = idx == 0 ? string.Empty : groups[idx];
         }
     }
 }

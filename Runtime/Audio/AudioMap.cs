@@ -43,8 +43,8 @@ namespace Bingyan
         public string Name;
         public AudioClip[] Clips;
         public bool Loop;
+        public float Range;
         public FloatRange Pitch;
         public AudioMixerGroup Bus;
-        [Range(0, 1)] public float Stereo;
     }
 }

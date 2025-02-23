@@ -32,6 +32,7 @@ namespace Bingyan.Editor
             var className = Path.GetFileNameWithoutExtension(scriptPath).Split('.')[0];
 
             StringBuilder code = new();
+            code.AppendLine("using Bingyan;");
             code.Append("public static class ").Append(className).Append("\n{");
             var groups = audioMap.FindProperty("groups");
             for (int i = 0; i < groups.arraySize; i++)
@@ -43,7 +44,7 @@ namespace Bingyan.Editor
                 for (int j = 0; j < infos.arraySize; j++)
                 {
                     string infoName = infos.GetArrayElementAtIndex(j).FindPropertyRelative("Name").stringValue;
-                    code.Append("\n\t\tpublic static readonly AudioPlayer ").Append(infoName).Append(" = new(\"").Append(groupName).Append("/").Append(infoName).Append("\");");
+                    code.Append("\n\t\tpublic static readonly AudioRef ").Append(infoName).Append(" = new(\"").Append(groupName).Append("/").Append(infoName).Append("\");");
                 }
                 code.Append("\n\t}");
             }

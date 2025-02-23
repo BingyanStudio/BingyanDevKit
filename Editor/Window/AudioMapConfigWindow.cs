@@ -72,7 +72,7 @@ namespace Bingyan.Editor
 
             var scPath = target.FindProperty("scriptPath");
             EditorGUILayout.LabelField("生成脚本", GUILayout.Width(60));
-            
+
             GUI.enabled = false;
             EditorGUILayout.TextField(scPath.stringValue);
             GUI.enabled = true;
@@ -305,8 +305,8 @@ namespace Bingyan.Editor
                 GUILayout.Label(curInfo.FindPropertyRelative("Name").stringValue, EditorStyles.boldLabel);
                 EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Clips"));
                 EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Loop"), new GUIContent("循环"));
+                EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Range"), new GUIContent("范围"));
                 EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Pitch"), new GUIContent("音调偏移"));
-                EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Stereo"), new GUIContent("3D效果"));
             }
 
             EditorGUILayout.EndVertical();

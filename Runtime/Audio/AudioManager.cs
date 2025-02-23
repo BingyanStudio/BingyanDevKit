@@ -28,7 +28,12 @@ namespace Bingyan
         /// <summary>
         /// 播放<paramref name="player"/>，且保证只有一个AudioSource播放它
         /// </summary>
-        internal AudioSource PlaySingleton(AudioRef player) => Play(player, gameObject, true);
+        internal AudioSource PlaySingleton(AudioRef player, Vector3 position = default)
+        {
+            var source = Play(player, null, true);
+            source.transform.position = position;
+            return source;
+        }
 
         /// <summary>
         /// 跟踪<paramref name="target"/>播放<paramref name="player"/>，且保证只有一个AudioSource播放它
@@ -38,7 +43,12 @@ namespace Bingyan
         /// <summary>
         /// 播放<paramref name="player"/>
         /// </summary>
-        internal AudioSource Play(AudioRef player) => Play(player, gameObject, false);
+        internal AudioSource Play(AudioRef player, Vector3 position = default)
+        {
+            var source = Play(player, null, false);
+            source.transform.position = position;
+            return source;
+        }
 
         /// <summary>
         /// 跟踪<paramref name="target"/>播放<paramref name="player"/>
@@ -47,6 +57,8 @@ namespace Bingyan
 
         private AudioSource Play(AudioRef player, GameObject target, bool singleton)
         {
+            if (player.Name.Length == 0) return null;
+
             SourceState state = null;
 
             foreach (var item in states)
@@ -81,7 +93,8 @@ namespace Bingyan
             state.Source.loop = info.Loop;
             state.Source.pitch = 1 + info.Pitch;
             state.Source.outputAudioMixerGroup = info.Bus;
-            state.Source.spatialBlend = info.Stereo;
+            state.Source.maxDistance = info.Range;
+            state.Source.spatialBlend = info.Range <= 0 ? 0 : 1;
             state.TimeSamples = 0;
             state.Clip = info;
             state.Source.Play();
@@ -91,12 +104,16 @@ namespace Bingyan
         /// <summary>
         /// 停止播放<paramref name="player"/>
         /// </summary>
-        internal void Stop(AudioRef player)
+        internal void Stop(AudioRef player) => Stop(player.Name);
+        internal void Stop(string name)
         {
+            if (name.Length == 0) return;
+
             foreach (var info in states)
-                if (info.Target == gameObject && info.Name == player.Name)
+                if (info.Target == null && info.Name == name)
                     info.Source.Stop();
         }
+
         /// <summary>
         /// 停止播放正在跟踪<paramref name="target"/>的<paramref name="player"/>
         /// </summary>
@@ -106,15 +123,20 @@ namespace Bingyan
                 if (info.Target == target && info.Name == player.Name)
                     info.Source.Stop();
         }
+
         private void FixedUpdate()
         {
             foreach (var info in states)
-                if (info.Target != null && info.Source.isPlaying)
+                if (info.Source.isPlaying)
                 {
                     if (info.Source.timeSamples < info.TimeSamples)
                         info.Source.pitch = 1 + info.Clip.Pitch;
                     info.TimeSamples = info.Source.timeSamples;
-                    info.Source.transform.position = info.Target.transform.position;
+
+                    if (info.Target)
+                        info.Source.transform.position = info.Target.transform.position;
+                    else if (info.Target != null)
+                        Stop(info.Name);
                 }
         }
 
