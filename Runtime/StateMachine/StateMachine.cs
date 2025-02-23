@@ -121,7 +121,7 @@ namespace Bingyan
                 pendingState = CurrentState;
                 var sb = new StringBuilder($"{name} 状态机内并不包含状态 {state}\n当前包含的状态有: ");
                 foreach (var item in states.Keys) sb.AppendLine(item.ToString());
-                Debug.LogWarning(sb.ToString());
+                Log.W("FSM", sb.ToString());
             }
         }
 
