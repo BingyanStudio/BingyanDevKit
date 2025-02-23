@@ -213,6 +213,10 @@ namespace Bingyan
                 case TweenType.Linear:
                     timer += (pingpong ? -1 : 1) * delta / builder.arg;
                     break;
+
+                case TweenType.NextFrame:
+                    timer = pingpong ? 0 : 1;
+                    break;
             }
         }
 
@@ -231,6 +235,13 @@ namespace Bingyan
         /// <param name="length">总时长</param>
         /// <returns>用于配置这个Tween的Builder对象</returns>
         public static Builder Linear(float length = 0.1f) => new(TweenType.Linear) { arg = length };
+
+        /// <summary>
+        /// 在下一帧完成
+        /// <para>这只会返回 0 和 1，适用于需要非常短延迟的操作</para>
+        /// </summary>
+        /// <returns>用于配置这个Tween的Builder对象</returns>
+        public static Builder NextFrame() => new(TweenType.NextFrame) { };
 
         public class Builder
         {
@@ -408,6 +419,6 @@ namespace Bingyan
     /// </summary>
     public enum TweenType
     {
-        Lerp, Linear
+        Lerp, Linear, NextFrame
     }
 }
