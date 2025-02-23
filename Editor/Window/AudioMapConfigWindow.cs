@@ -28,6 +28,8 @@ namespace Bingyan.Editor
         private int clickedGroupIdx = -1, clickedInfoIdx = -1;
         private bool renaming = false;
 
+        private string search = string.Empty;
+
         private Vector2 scrollPos;
 
         [MenuItem("DevKit/音频配置")]
@@ -111,6 +113,7 @@ namespace Bingyan.Editor
             #region Group Header
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("音频组", EditorStyles.boldLabel);
+
             if (GUILayout.Button("添加组", GUILayout.Width(100)))
             {
                 int idx = 1;
@@ -140,6 +143,8 @@ namespace Bingyan.Editor
                 }
             }
             EditorGUILayout.EndHorizontal();
+
+            search = EditorGUILayout.TextField("搜索", search);
             #endregion
 
             #region Group Body
@@ -147,6 +152,8 @@ namespace Bingyan.Editor
             {
                 var group = groups.GetArrayElementAtIndex(i);
                 var infos = group.FindPropertyRelative("Infos");
+
+                if (!group.FindPropertyRelative("Name").stringValue.Contains(search, StringComparison.OrdinalIgnoreCase)) continue;
 
                 #region Info Header
 
