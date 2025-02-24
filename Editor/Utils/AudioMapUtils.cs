@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace Bingyan.Editor
 {
-    public static class AudioMapUtils
+    internal static class AudioMapUtils
     {
         public static bool TryGetSO(out SerializedObject target, out string path)
         {
