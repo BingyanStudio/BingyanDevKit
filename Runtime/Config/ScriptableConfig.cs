@@ -22,9 +22,10 @@ namespace Bingyan
                     if (all.Length == 0)
                     {
                         Log.I("ScriptableConfig", $"未找到已加载的资源，搜索: t:{typeof(T).Name}");
-                        var paths = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
-                        if (paths.Length > 0)
-                            all = new T[] { AssetDatabase.LoadAssetAtPath<T>(paths[0]) };
+                        var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+                        if (guids.Length > 0)
+                            all = new T[] { AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guids[0])) };
+                        
                         else Log.E("ScriptableConfig", "未找到资源");
                     }
 #endif
