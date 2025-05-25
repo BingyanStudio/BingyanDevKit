@@ -290,6 +290,20 @@ namespace Bingyan
             => Quaternion.Euler(0, 0, angle) * vec;
 
         /// <summary>
+        /// 将向量各分量取绝对值
+        /// </summary>
+        /// <returns>绝对值后的向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 Abs(this Vector2 vec) => new(Mathf.Abs(vec.x), Mathf.Abs(vec.y));
+
+        /// <summary>
+        /// 将向量各分量取绝对值
+        /// </summary>
+        /// <returns>绝对值后的向量</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 Abs(this Vector3 vec) => new(Mathf.Abs(vec.x), Mathf.Abs(vec.y), Mathf.Abs(vec.z));
+
+        /// <summary>
         /// 对二维向量进行点乘
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

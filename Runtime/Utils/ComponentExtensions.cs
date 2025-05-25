@@ -37,6 +37,7 @@ namespace Bingyan
         /// <param name="comp">开始搜索的组件（根）</param>
         /// <param name="path">路径</param>
         /// <returns>按路径找到的组件</returns>
+        [HideInCallstack]
         public static T GetComp<T>(this Component comp, string path) where T : Component
             => comp.transform.Find(path).GetComponent<T>();
 
