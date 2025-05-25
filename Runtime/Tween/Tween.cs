@@ -170,7 +170,7 @@ namespace Bingyan
         {
             if (!Playing || paused) return;
             if (GlobalPaused && !builder.unscaled) return;
-            delta = builder.unscaled ? delta : delta * TimeScale;
+            delta = builder.unscaled ? delta : Time.deltaTime * TimeScale;
             if (builder.limitDeltaTime) delta = Mathf.Min(delta, builder.maxDeltaTime);
 
             Update(delta, builder.pingpong && pingpongFlag);
@@ -215,7 +215,7 @@ namespace Bingyan
                     break;
 
                 case TweenType.NextFrame:
-                    timer = pingpong ? 0 : 1;
+                    timer += pingpong ? -0.5f : 0.5f;
                     break;
             }
         }
@@ -412,6 +412,8 @@ namespace Bingyan
             if (Tweener.Instance.TryGet(id, out var t))
                 t.Resume();
         }
+
+        public readonly bool Playing => Tweener.Instance.TryGet(id, out var t) && t.Playing;
     }
 
     /// <summary>
