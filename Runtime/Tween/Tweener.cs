@@ -10,15 +10,11 @@ namespace Bingyan
     /// </summary>
     internal class Tweener : MonoBehaviour
     {
-        internal const int UPDATE_RATE = 90;
-
         internal static ulong handleCounter = 1;    // 从 1 开始，0 表示空！
 
         internal static Tweener Instance { get; private set; }
         private readonly List<Tween> tweens = new();
         private readonly BiDictionary<Tween, ulong> tweenHandles = new();
-
-        private float frameTime, frameTimer = 0;
 
         static Tweener()
         {
@@ -29,7 +25,6 @@ namespace Bingyan
         private void Awake()
         {
             Instance = this;
-            frameTime = 1f / UPDATE_RATE;
         }
 
         private void Start()
@@ -43,16 +38,21 @@ namespace Bingyan
 
         private void Update()
         {
-            frameTimer += Time.unscaledDeltaTime;
-            if (frameTimer >= frameTime)
-            {
+            // frameTimer += Time.unscaledDeltaTime;
+            // if (frameTimer >= frameTime)
+            // {
+            //     for (int i = tweens.Count - 1; i >= 0; i--)
+            //     {
+            //         i = Mathf.Min(i, tweens.Count - 1);
+            //         tweens[i].Update(frameTimer);
+            //     }
+            //     frameTimer = 0;
+            // }
                 for (int i = tweens.Count - 1; i >= 0; i--)
                 {
                     i = Mathf.Min(i, tweens.Count - 1);
-                    tweens[i].Update(frameTimer);
+                    tweens[i].Update(Time.unscaledDeltaTime);
                 }
-                frameTimer = 0;
-            }
         }
 
         internal ulong Register(Tween t)
