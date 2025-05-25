@@ -46,5 +46,6 @@ namespace Bingyan
         public float Range;
         public FloatRange Pitch;
         public AudioMixerGroup Bus;
+        public float Volume = 1;
     }
 }

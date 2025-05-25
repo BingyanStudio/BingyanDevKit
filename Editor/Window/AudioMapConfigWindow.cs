@@ -314,6 +314,7 @@ namespace Bingyan.Editor
                 EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Loop"), new GUIContent("循环"));
                 EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Range"), new GUIContent("范围"));
                 EditorGUILayout.PropertyField(curInfo.FindPropertyRelative("Pitch"), new GUIContent("音调偏移"));
+                EditorGUILayout.Slider(curInfo.FindPropertyRelative("Volume"), 0, 1, new GUIContent("音量"));
             }
 
             EditorGUILayout.EndVertical();

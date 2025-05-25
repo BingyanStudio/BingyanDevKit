@@ -95,6 +95,7 @@ namespace Bingyan
             state.Source.outputAudioMixerGroup = info.Bus;
             state.Source.maxDistance = info.Range;
             state.Source.spatialBlend = info.Range <= 0 ? 0 : 1;
+            state.Source.volume = info.Volume;
             state.TimeSamples = 0;
             state.Clip = info;
             state.Source.Play();
@@ -124,7 +125,7 @@ namespace Bingyan
                     info.Source.Stop();
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             foreach (var info in states)
                 if (info.Source.isPlaying)
@@ -136,7 +137,8 @@ namespace Bingyan
                     if (info.Target)
                         info.Source.transform.position = info.Target.transform.position;
                     else if (info.Target != null)
-                        Stop(info.Name);
+                        info.Source.Stop();
+                        //Stop(info.Name);
                 }
         }
 

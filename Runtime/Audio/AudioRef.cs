@@ -43,6 +43,6 @@ namespace Bingyan
         /// </summary>
         public readonly AudioSource PlaySingleton(GameObject target) => AudioManager.Instance.PlaySingleton(this, target);
 
-        public static implicit operator bool(AudioRef audioRef) => audioRef.Name != string.Empty && audioRef.Name.Length > 0;
+        public static implicit operator bool(AudioRef audioRef) => audioRef.Name != null && audioRef.Name.Length > 0;
     }
 }
