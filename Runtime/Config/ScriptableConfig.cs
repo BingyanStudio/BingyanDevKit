@@ -25,8 +25,6 @@ namespace Bingyan
                         var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
                         if (guids.Length > 0)
                             all = new T[] { AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guids[0])) };
-                        
-                        else Log.E("ScriptableConfig", "未找到资源");
                     }
 #endif
 

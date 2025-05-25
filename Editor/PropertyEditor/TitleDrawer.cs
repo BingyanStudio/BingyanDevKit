@@ -39,7 +39,6 @@ namespace Bingyan.Editor
                     }
                     break;
 
-                case SerializedPropertyType.String:
                 default:
                     EditorGUI.PropertyField(position, property, label);
                     break;
@@ -77,7 +76,6 @@ namespace Bingyan.Editor
                     }
                     break;
 
-                case SerializedPropertyType.String:
                 default:
                     EditorGUI.PropertyField(pos, property);
                     break;
