@@ -1,4 +1,4 @@
-// #define LOG_TRACE
+#define LOG_TRACE
 #define LOG_INFO
 #define LOG_WARNING
 #define LOG_ERROR
